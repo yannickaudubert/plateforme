@@ -1,39 +1,59 @@
 # Cockpit OS DSI Transverse
 
-Cockpit OS DSI Transverse is a local-first operator layer above Windows. It unifies operational control for:
+Cockpit OS DSI Transverse is a local-first operator layer above Windows.  
+It unifies operational supervision and actions across:
 
 - Obsidian (canonical documentation)
 - NocoDB (structured transverse data)
 - n8n (workflow orchestration)
 - Perplexica (research and exploration)
-- Open WebUI (operator AI interactions)
+- Open WebUI (operator AI interface)
 
-This repository provides the first executable milestone:
+Language versions:
 
-- clear repository structure
-- React + TypeScript frontend scaffold with seven operator pages
-- FastAPI backend scaffold with explicit adapters and health/status routes
-- config and secrets layers
-- action journal scaffold
-- local development instructions
-- docker-compose for local development
+- English: `README.md`
+- Francais: `README.fr.md`
 
-## Architecture
+## Current status (v0.1 foundation)
 
-- `frontend/`: operator interface (React + TypeScript)
-- `backend/`: API, services, adapters, guardrails, journaling (FastAPI)
-- `config/`: non-secret runtime configuration
-- `docs/`: architecture and repository conventions
-- `scripts/`: local helper scripts for development
-- `logs/`: runtime logs (gitignored)
+This repository is now an executable and testable operator foundation:
 
-## Configuration precedence
+- clean modular architecture (`frontend`, `backend`, `config`, `docs`, `scripts`)
+- seven operator pages in React + TypeScript
+- FastAPI backend with explicit adapters per tool
+- action journaling and health status endpoints
+- safe Obsidian read/write flows
+- NocoDB read flows (bases, tables, rows) with auth guardrails
 
-Runtime values follow this order:
+## Repository structure
 
-1. environment variables from `.env`
-2. values from `config/app.json`
-3. hardcoded defaults in backend config models
+- `frontend/` operator UI (React + TypeScript, Vite)
+- `backend/` API, adapters, services, security rules, logging
+- `config/` non-secret runtime config (`app.json`)
+- `docs/` architecture and conventions
+- `scripts/` local dev helpers
+- `logs/` local action journal output (gitignored)
+
+## Configuration model
+
+Runtime value precedence:
+
+1. `.env` environment variables
+2. `config/app.json`
+3. backend defaults (pydantic models)
+
+Key variables in `.env`:
+
+- `OBSIDIAN_VAULT_PATH` canonical vault root (default `D:/Yannick`)
+- `OBSIDIAN_ALLOWED_ROOTS` allowed filesystem roots for Obsidian actions
+- `NOCODB_BASE_URL`, `N8N_BASE_URL`, `PERPLEXICA_BASE_URL`, `OPENWEBUI_BASE_URL`
+- `NOCODB_API_TOKEN` required for NocoDB read endpoints
+
+Start from:
+
+```powershell
+Copy-Item .env.example .env
+```
 
 ## Local development
 
@@ -41,15 +61,9 @@ Prerequisites:
 
 - Node.js 20+
 - Python 3.11+
-- Docker Desktop (optional for compose workflow)
+- Docker Desktop (optional)
 
-1. Create environment file:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-2. Frontend:
+Run frontend:
 
 ```powershell
 Set-Location frontend
@@ -57,41 +71,106 @@ npm install
 npm run dev
 ```
 
-3. Backend (new terminal):
+Run backend:
 
 ```powershell
 Set-Location backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -e .
+pip install -e ".[dev]"
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-4. Open:
+Access points:
 
 - Frontend: http://localhost:5173
 - Backend docs: http://localhost:8000/docs
-- API health: http://localhost:8000/health
+- Backend health: http://localhost:8000/health
 
-For NocoDB read operations, set `NOCODB_API_TOKEN` in `.env`.
-
-## Docker compose
+## Docker compose (local dev)
 
 ```powershell
 docker compose up --build
 ```
 
-Compose exposes:
+Compose includes:
 
 - frontend: http://localhost:5173
 - backend: http://localhost:8000
 
-## Current scope
+External services (NocoDB, n8n, Perplexica, Open WebUI) are expected to run separately on their configured URLs.
 
-This milestone intentionally avoids deep live integrations. Adapters provide explicit interfaces and health scaffolding first.
+## Implemented operator capabilities
 
-Obsidian note updates are safe-by-default with:
+Home:
 
-- optimistic locking via `modified_at`
-- local backup creation in `.cockpit-backups/`
-- atomic write replacement
+- consolidated tool health status
+- recent action journal display
+
+Obsidian Workspace:
+
+- list notes (excluding `.obsidian`)
+- read note content and frontmatter
+- create note with path guardrails
+- update note with optimistic locking (`expected_modified_at`)
+- atomic writes and automatic backups in `.cockpit-backups/`
+
+NocoDB Control:
+
+- list bases
+- list tables in a selected base
+- read rows from a selected table
+- explicit error handling for auth, missing resources, and upstream failures
+
+## API surface (current)
+
+System and admin:
+
+- `GET /health`
+- `GET /api/v1/system/status`
+- `GET /api/v1/admin/overview`
+
+Obsidian:
+
+- `GET /api/v1/obsidian/notes`
+- `GET /api/v1/obsidian/note?path=...`
+- `POST /api/v1/obsidian/note`
+- `PUT /api/v1/obsidian/note`
+
+NocoDB:
+
+- `GET /api/v1/nocodb/bases`
+- `GET /api/v1/nocodb/bases/{base_id}/tables`
+- `GET /api/v1/nocodb/tables/{table_id}/rows?base_id=...&limit=...&offset=...`
+
+## Safety and security notes
+
+- `.obsidian` is blocked from business content operations.
+- relative traversal and out-of-root paths are rejected.
+- secrets are never returned by API, only boolean flags in admin overview.
+- journal sanitizes keys containing `secret`, `token`, or `key`.
+- NocoDB read APIs return `401` when `NOCODB_API_TOKEN` is missing/invalid.
+
+## Validation and tests
+
+Backend:
+
+```powershell
+Set-Location backend
+.\.venv\Scripts\Activate.ps1
+pytest -q
+python -m compileall app
+```
+
+Frontend:
+
+```powershell
+Set-Location frontend
+npm run build
+```
+
+## Current limitations
+
+- n8n, Perplexica, and Open WebUI are health-scaffolded but not yet deeply integrated.
+- NocoDB scope is read-only in this iteration.
+- journal persistence is file-based (SQLite migration planned later).
