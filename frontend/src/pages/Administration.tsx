@@ -1,16 +1,25 @@
 import { useEffect, useState } from "react";
 import { PageLayout } from "../components/PageLayout";
-import { fetchAdminView } from "../lib/api";
-import { AdminView } from "../types/api";
+import { fetchAdminDiagnostics, fetchAdminView } from "../lib/api";
+import { AdminDiagnostics, AdminView } from "../types/api";
 
 export function Administration() {
   const [admin, setAdmin] = useState<AdminView | null>(null);
+  const [diagnostics, setDiagnostics] = useState<AdminDiagnostics | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchAdminView()
-      .then(setAdmin)
+  const loadAdministration = () => {
+    setError(null);
+    Promise.all([fetchAdminView(), fetchAdminDiagnostics()])
+      .then(([overview, diagnostic]) => {
+        setAdmin(overview);
+        setDiagnostics(diagnostic);
+      })
       .catch((err: Error) => setError(err.message));
+  };
+
+  useEffect(() => {
+    loadAdministration();
   }, []);
 
   return (
@@ -19,7 +28,10 @@ export function Administration() {
       description="Configuration, secrets state, and operational health visibility."
     >
       {error ? <p className="error">Administration API unavailable: {error}</p> : null}
-      {!admin ? <p>Loading administration overview...</p> : null}
+      <button className="button" onClick={loadAdministration} type="button">
+        Refresh diagnostics
+      </button>
+      {!admin || !diagnostics ? <p>Loading administration overview...</p> : null}
       {admin ? (
         <div className="grid">
           <article className="card">
@@ -52,6 +64,56 @@ export function Administration() {
             </ul>
           </article>
         </div>
+      ) : null}
+      {diagnostics ? (
+        <>
+          <section className="panel">
+            <h3>Deployment diagnostics</h3>
+            <p>Generated at: {new Date(diagnostics.generated_at).toLocaleString()}</p>
+            <h4>Files</h4>
+            <ul className="list">
+              {Object.entries(diagnostics.files).map(([key, value]) => (
+                <li key={key}>
+                  {key}: {String(value)}
+                </li>
+              ))}
+            </ul>
+            <h4>Path checks</h4>
+            <ul className="list">
+              {Object.entries(diagnostics.path_checks).map(([key, value]) => (
+                <li key={key}>
+                  {key}: {String(value)}
+                </li>
+              ))}
+            </ul>
+            <h4>Tool health</h4>
+            <ul className="list">
+              {diagnostics.tool_health.map((tool) => (
+                <li key={tool.tool}>
+                  {tool.tool}: {tool.status} ({tool.message})
+                </li>
+              ))}
+            </ul>
+            <h4>Recommended actions</h4>
+            {diagnostics.recommendations.length === 0 ? (
+              <p>No blocking recommendations.</p>
+            ) : (
+              <ul className="list">
+                {diagnostics.recommendations.map((recommendation) => (
+                  <li key={recommendation}>{recommendation}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section className="panel">
+            <h3>Stack commands</h3>
+            <pre className="command-block">.\\scripts\\bootstrap.ps1</pre>
+            <pre className="command-block">.\\scripts\\up.ps1</pre>
+            <pre className="command-block">.\\scripts\\up.ps1 -WithPerplexica</pre>
+            <pre className="command-block">.\\scripts\\status.ps1</pre>
+            <pre className="command-block">.\\scripts\\down.ps1</pre>
+          </section>
+        </>
       ) : null}
     </PageLayout>
   );

@@ -100,6 +100,26 @@ Compose includes:
 
 External services (NocoDB, n8n, Perplexica, Open WebUI) are expected to run separately on their configured URLs.
 
+## Full stack deployment scripts
+
+Use the operator scripts for a full local stack (backend, frontend, NocoDB, n8n, Open WebUI, optional Perplexica):
+
+```powershell
+.\scripts\bootstrap.ps1
+.\scripts\up.ps1
+.\scripts\status.ps1
+.\scripts\down.ps1
+```
+
+To include Perplexica:
+
+```powershell
+.\scripts\up.ps1 -WithPerplexica
+.\scripts\status.ps1 -WithPerplexica
+```
+
+The full compose definition is in `docker-compose.full.yml`.
+
 ## Implemented operator capabilities
 
 Home:
@@ -129,6 +149,7 @@ System and admin:
 - `GET /health`
 - `GET /api/v1/system/status`
 - `GET /api/v1/admin/overview`
+- `GET /api/v1/admin/diagnostics`
 
 Obsidian:
 

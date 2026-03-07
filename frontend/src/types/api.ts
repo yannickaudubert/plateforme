@@ -39,6 +39,15 @@ export interface AdminView {
   };
 }
 
+export interface AdminDiagnostics {
+  generated_at: string;
+  files: Record<string, boolean>;
+  paths: Record<string, string>;
+  path_checks: Record<string, boolean>;
+  tool_health: ToolHealth[];
+  recommendations: string[];
+}
+
 export interface ObsidianNoteContent {
   path: string;
   content: string;

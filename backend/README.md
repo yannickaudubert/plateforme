@@ -23,6 +23,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - `GET /api/v1/nocodb/bases/{base_id}/tables`
 - `GET /api/v1/nocodb/tables/{table_id}/rows?base_id=...&limit=...&offset=...`
 - `GET /api/v1/admin/overview`
+- `GET /api/v1/admin/diagnostics`
 
 ## Tests
 

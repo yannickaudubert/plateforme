@@ -25,6 +25,7 @@ frontend/*.tsbuildinfo
 
 # Build and runtime
 logs/
+data/
 *.log
 
 # IDE / OS

@@ -1,0 +1,87 @@
+services:
+  backend:
+    image: python:3.12-slim
+    working_dir: /workspace/backend
+    env_file:
+      - .env
+    environment:
+      COCKPIT_CONFIG_FILE: /workspace/config/app.json
+      COCKPIT_LOG_DIR: /workspace/logs
+      OBSIDIAN_VAULT_PATH: /data/obsidian
+      OBSIDIAN_ALLOWED_ROOTS: /data/obsidian
+      NOCODB_BASE_URL: http://nocodb:8080
+      N8N_BASE_URL: http://n8n:5678
+      PERPLEXICA_BASE_URL: http://perplexica:3000
+      OPENWEBUI_BASE_URL: http://openwebui:8080
+    volumes:
+      - ./backend:/workspace/backend
+      - ./config:/workspace/config
+      - ./logs:/workspace/logs
+      - ${OBSIDIAN_HOST_PATH:-./data/obsidian-vault}:/data/obsidian
+    command: >
+      sh -c "pip install --no-cache-dir -e . &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - nocodb
+      - n8n
+      - openwebui
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /workspace/frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    volumes:
+      - ./frontend:/workspace/frontend
+    command: >
+      sh -c "npm install &&
+      npm run dev -- --host 0.0.0.0 --port 5173"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  nocodb:
+    image: nocodb/nocodb:latest
+    environment:
+      NC_DB: sqlite:///usr/app/data/nocodb.db
+      NC_AUTH_JWT_SECRET: ${NOCODB_JWT_SECRET:-change-me}
+    volumes:
+      - ./data/nocodb:/usr/app/data
+    ports:
+      - "8080:8080"
+
+  n8n:
+    image: n8nio/n8n:latest
+    environment:
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      N8N_SECURE_COOKIE: "false"
+      GENERIC_TIMEZONE: ${GENERIC_TIMEZONE:-Europe/Paris}
+      WEBHOOK_URL: http://localhost:5678/
+    volumes:
+      - ./data/n8n:/home/node/.n8n
+    ports:
+      - "5678:5678"
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    environment:
+      ENABLE_SIGNUP: "false"
+      WEBUI_AUTH: "false"
+      WEBUI_SECRET_KEY: ${OPENWEBUI_SECRET_KEY:-change-me}
+    volumes:
+      - ./data/openwebui:/app/backend/data
+    ports:
+      - "3000:8080"
+
+  perplexica:
+    image: ${PERPLEXICA_IMAGE:-itsthedev/perplexica:latest}
+    profiles: ["perplexica"]
+    volumes:
+      - ./data/perplexica:/app/data
+    ports:
+      - "3001:3000"

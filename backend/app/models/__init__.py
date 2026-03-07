@@ -5,10 +5,17 @@ from app.models.obsidian import (
     ObsidianUpdateNoteRequest,
     ObsidianWriteResponse,
 )
-from app.models.system import ActionLogEntry, AdminOverviewResponse, SystemStatusResponse, ToolHealth
+from app.models.system import (
+    ActionLogEntry,
+    AdminDiagnosticsResponse,
+    AdminOverviewResponse,
+    SystemStatusResponse,
+    ToolHealth,
+)
 
 __all__ = [
     "ActionLogEntry",
+    "AdminDiagnosticsResponse",
     "AdminOverviewResponse",
     "NocoDBBaseSummary",
     "NocoDBRowsResponse",

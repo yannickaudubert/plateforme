@@ -1,4 +1,5 @@
 import {
+  AdminDiagnostics,
   AdminView,
   NocoDBBaseSummary,
   NocoDBRowsResponse,
@@ -38,6 +39,10 @@ export function fetchSystemStatus(): Promise<SystemStatus> {
 
 export function fetchAdminView(): Promise<AdminView> {
   return request<AdminView>("/api/v1/admin/overview");
+}
+
+export function fetchAdminDiagnostics(): Promise<AdminDiagnostics> {
+  return request<AdminDiagnostics>("/api/v1/admin/diagnostics");
 }
 
 export function fetchObsidianNotes(limit = 20): Promise<string[]> {

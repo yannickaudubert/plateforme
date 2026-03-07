@@ -30,3 +30,12 @@ class AdminOverviewResponse(BaseModel):
     obsidian_allowed_roots: list[str]
     tools: dict[str, str]
     secrets: dict[str, bool]
+
+
+class AdminDiagnosticsResponse(BaseModel):
+    generated_at: str
+    files: dict[str, bool]
+    paths: dict[str, str]
+    path_checks: dict[str, bool]
+    tool_health: list[ToolHealth]
+    recommendations: list[str]
