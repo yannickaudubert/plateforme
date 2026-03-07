@@ -38,3 +38,31 @@ export interface AdminView {
     openwebui_api_key_set: boolean;
   };
 }
+
+export interface ObsidianNoteContent {
+  path: string;
+  content: string;
+  frontmatter: Record<string, string>;
+  bytes_size: number;
+  modified_at: string;
+}
+
+export interface ObsidianCreateNotePayload {
+  path: string;
+  content: string;
+  create_parents?: boolean;
+}
+
+export interface ObsidianUpdateNotePayload {
+  path: string;
+  content: string;
+  expected_modified_at?: string;
+  create_backup?: boolean;
+}
+
+export interface ObsidianWriteResponse {
+  path: string;
+  status: string;
+  bytes_written: number;
+  modified_at: string;
+}

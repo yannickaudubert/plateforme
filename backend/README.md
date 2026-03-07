@@ -16,4 +16,14 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - `GET /health`
 - `GET /api/v1/system/status`
 - `GET /api/v1/obsidian/notes`
+- `GET /api/v1/obsidian/note?path=...`
+- `POST /api/v1/obsidian/note`
+- `PUT /api/v1/obsidian/note` (supports `expected_modified_at` and `create_backup`)
 - `GET /api/v1/admin/overview`
+
+## Tests
+
+```powershell
+pip install -e ".[dev]"
+pytest
+```

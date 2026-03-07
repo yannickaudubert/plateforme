@@ -1,4 +1,11 @@
 {
+  "runtime": {
+    "app_name": "Cockpit OS DSI Transverse",
+    "app_env": "development",
+    "app_host": "0.0.0.0",
+    "app_port": 8000,
+    "log_dir": "./logs"
+  },
   "operator": {
     "workspace_name": "Cockpit OS DSI Transverse",
     "default_page": "home"

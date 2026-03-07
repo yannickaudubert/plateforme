@@ -27,6 +27,14 @@ This repository provides the first executable milestone:
 - `scripts/`: local helper scripts for development
 - `logs/`: runtime logs (gitignored)
 
+## Configuration precedence
+
+Runtime values follow this order:
+
+1. environment variables from `.env`
+2. values from `config/app.json`
+3. hardcoded defaults in backend config models
+
 ## Local development
 
 Prerequisites:
@@ -79,3 +87,9 @@ Compose exposes:
 ## Current scope
 
 This milestone intentionally avoids deep live integrations. Adapters provide explicit interfaces and health scaffolding first.
+
+Obsidian note updates are safe-by-default with:
+
+- optimistic locking via `modified_at`
+- local backup creation in `.cockpit-backups/`
+- atomic write replacement

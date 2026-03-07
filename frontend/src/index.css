@@ -129,6 +129,65 @@ body {
   border-radius: 0.4rem;
 }
 
+.success {
+  padding: 0.65rem;
+  background: rgba(63, 153, 87, 0.2);
+  border: 1px solid rgba(159, 244, 178, 0.35);
+  border-radius: 0.4rem;
+}
+
+.button {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(173, 216, 230, 0.35);
+  background: rgba(65, 90, 119, 0.9);
+  color: #f5f7fa;
+  border-radius: 0.45rem;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  margin-top: 0.4rem;
+  margin-bottom: 0.6rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(173, 216, 230, 0.3);
+  background: rgba(13, 27, 42, 0.82);
+  color: #f5f7fa;
+  border-radius: 0.45rem;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.label {
+  display: inline-block;
+  margin-top: 0.35rem;
+  color: #d7e3f0;
+}
+
+.note-link {
+  border: none;
+  background: transparent;
+  color: #d7e3f0;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.note-link-active {
+  text-decoration: underline;
+  color: #9ff4b2;
+}
+
 @media (max-width: 980px) {
   .app-shell {
     grid-template-columns: 1fr;

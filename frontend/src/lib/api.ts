@@ -1,11 +1,30 @@
-import { AdminView, SystemStatus } from "../types/api";
+import {
+  AdminView,
+  ObsidianCreateNotePayload,
+  ObsidianNoteContent,
+  ObsidianUpdateNotePayload,
+  ObsidianWriteResponse,
+  SystemStatus
+} from "../types/api";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
-async function request<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    ...init
+  });
   if (!response.ok) {
-    throw new Error(`API error ${response.status}`);
+    let detail: string | undefined;
+    try {
+      const payload = (await response.json()) as { detail?: string };
+      detail = payload.detail;
+    } catch {
+      detail = undefined;
+    }
+    throw new Error(detail ? `API error ${response.status}: ${detail}` : `API error ${response.status}`);
   }
   return response.json() as Promise<T>;
 }
@@ -20,4 +39,23 @@ export function fetchAdminView(): Promise<AdminView> {
 
 export function fetchObsidianNotes(limit = 20): Promise<string[]> {
   return request<string[]>(`/api/v1/obsidian/notes?limit=${limit}`);
+}
+
+export function fetchObsidianNote(path: string): Promise<ObsidianNoteContent> {
+  const encodedPath = encodeURIComponent(path);
+  return request<ObsidianNoteContent>(`/api/v1/obsidian/note?path=${encodedPath}`);
+}
+
+export function createObsidianNote(payload: ObsidianCreateNotePayload): Promise<ObsidianWriteResponse> {
+  return request<ObsidianWriteResponse>("/api/v1/obsidian/note", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function updateObsidianNote(payload: ObsidianUpdateNotePayload): Promise<ObsidianWriteResponse> {
+  return request<ObsidianWriteResponse>("/api/v1/obsidian/note", {
+    method: "PUT",
+    body: JSON.stringify(payload)
+  });
 }
