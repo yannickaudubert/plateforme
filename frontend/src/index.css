@@ -164,6 +164,10 @@ body {
   border-radius: 0.45rem;
 }
 
+.input {
+  min-height: 2.35rem;
+}
+
 .textarea {
   resize: vertical;
 }
@@ -186,6 +190,31 @@ body {
 .note-link-active {
   text-decoration: underline;
   color: #9ff4b2;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(173, 216, 230, 0.2);
+  padding: 0.5rem 0.45rem;
+  font-size: 0.92rem;
+}
+
+.data-table th {
+  color: #bdd0e3;
+  font-weight: 600;
 }
 
 @media (max-width: 980px) {

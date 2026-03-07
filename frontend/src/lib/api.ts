@@ -1,5 +1,8 @@
 import {
   AdminView,
+  NocoDBBaseSummary,
+  NocoDBRowsResponse,
+  NocoDBTableSummary,
   ObsidianCreateNotePayload,
   ObsidianNoteContent,
   ObsidianUpdateNotePayload,
@@ -58,4 +61,31 @@ export function updateObsidianNote(payload: ObsidianUpdateNotePayload): Promise<
     method: "PUT",
     body: JSON.stringify(payload)
   });
+}
+
+export function fetchNocoDBBases(): Promise<NocoDBBaseSummary[]> {
+  return request<NocoDBBaseSummary[]>("/api/v1/nocodb/bases");
+}
+
+export function fetchNocoDBTables(baseId: string): Promise<NocoDBTableSummary[]> {
+  return request<NocoDBTableSummary[]>(`/api/v1/nocodb/bases/${encodeURIComponent(baseId)}/tables`);
+}
+
+export function fetchNocoDBRows(
+  tableId: string,
+  options?: { baseId?: string; limit?: number; offset?: number }
+): Promise<NocoDBRowsResponse> {
+  const params = new URLSearchParams();
+  if (options?.baseId) {
+    params.set("base_id", options.baseId);
+  }
+  if (typeof options?.limit === "number") {
+    params.set("limit", String(options.limit));
+  }
+  if (typeof options?.offset === "number") {
+    params.set("offset", String(options.offset));
+  }
+  const query = params.toString();
+  const suffix = query ? `?${query}` : "";
+  return request<NocoDBRowsResponse>(`/api/v1/nocodb/tables/${encodeURIComponent(tableId)}/rows${suffix}`);
 }

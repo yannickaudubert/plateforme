@@ -66,3 +66,24 @@ export interface ObsidianWriteResponse {
   bytes_written: number;
   modified_at: string;
 }
+
+export interface NocoDBBaseSummary {
+  id: string;
+  title: string;
+  type: string | null;
+}
+
+export interface NocoDBTableSummary {
+  id: string;
+  title: string;
+  base_id: string;
+  type: string | null;
+}
+
+export interface NocoDBRowsResponse {
+  table_id: string;
+  base_id: string | null;
+  row_count: number;
+  total_rows: number | null;
+  rows: Record<string, unknown>[];
+}

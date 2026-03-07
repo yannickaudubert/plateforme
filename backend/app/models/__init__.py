@@ -1,3 +1,4 @@
+from app.models.nocodb import NocoDBBaseSummary, NocoDBRowsResponse, NocoDBTableSummary
 from app.models.obsidian import (
     ObsidianCreateNoteRequest,
     ObsidianNoteContent,
@@ -9,6 +10,9 @@ from app.models.system import ActionLogEntry, AdminOverviewResponse, SystemStatu
 __all__ = [
     "ActionLogEntry",
     "AdminOverviewResponse",
+    "NocoDBBaseSummary",
+    "NocoDBRowsResponse",
+    "NocoDBTableSummary",
     "ObsidianCreateNoteRequest",
     "ObsidianNoteContent",
     "ObsidianUpdateNoteRequest",

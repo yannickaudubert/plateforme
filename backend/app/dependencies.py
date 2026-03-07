@@ -21,7 +21,13 @@ def get_secrets() -> SecretSettings:
 
 @lru_cache(maxsize=1)
 def get_adapter_registry() -> AdapterRegistry:
-    return AdapterRegistry(get_runtime_config())
+    secrets = get_secrets()
+    nocodb_token = (
+        secrets.nocodb_api_token.get_secret_value().strip()
+        if secrets.nocodb_api_token is not None
+        else None
+    )
+    return AdapterRegistry(get_runtime_config(), nocodb_api_token=nocodb_token or None)
 
 
 @lru_cache(maxsize=1)

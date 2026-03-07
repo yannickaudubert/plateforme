@@ -73,6 +73,8 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - Backend docs: http://localhost:8000/docs
 - API health: http://localhost:8000/health
 
+For NocoDB read operations, set `NOCODB_API_TOKEN` in `.env`.
+
 ## Docker compose
 
 ```powershell
