@@ -1,0 +1,40 @@
+export interface ToolHealth {
+  tool: string;
+  status: "ok" | "degraded";
+  message: string;
+  checked_at: string;
+}
+
+export interface ActionJournalEntry {
+  timestamp: string;
+  tool: string;
+  action: string;
+  status: string;
+  details: Record<string, unknown>;
+}
+
+export interface SystemStatus {
+  environment: string;
+  tools: ToolHealth[];
+  recent_actions: ActionJournalEntry[];
+}
+
+export interface AdminView {
+  app_name: string;
+  environment: string;
+  config_file: string;
+  obsidian_vault_path: string;
+  obsidian_allowed_roots: string[];
+  tools: {
+    nocodb_base_url: string;
+    n8n_base_url: string;
+    perplexica_base_url: string;
+    openwebui_base_url: string;
+  };
+  secrets: {
+    nocodb_token_set: boolean;
+    n8n_api_key_set: boolean;
+    perplexica_api_key_set: boolean;
+    openwebui_api_key_set: boolean;
+  };
+}

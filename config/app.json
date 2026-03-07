@@ -1,0 +1,30 @@
+{
+  "operator": {
+    "workspace_name": "Cockpit OS DSI Transverse",
+    "default_page": "home"
+  },
+  "obsidian": {
+    "vault_path": "D:/Yannick",
+    "allowed_roots": [
+      "D:/Yannick"
+    ]
+  },
+  "tools": {
+    "nocodb": {
+      "base_url": "http://localhost:8080"
+    },
+    "n8n": {
+      "base_url": "http://localhost:5678"
+    },
+    "perplexica": {
+      "base_url": "http://localhost:3001"
+    },
+    "openwebui": {
+      "base_url": "http://localhost:3000"
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "max_recent_actions": 20
+  }
+}
