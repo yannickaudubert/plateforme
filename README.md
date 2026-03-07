@@ -24,6 +24,7 @@ This repository is now an executable and testable operator foundation:
 - action journaling and health status endpoints
 - safe Obsidian read/write flows
 - NocoDB read flows (bases, tables, rows) with auth guardrails
+- bilingual setup wizard (French/English) for step-by-step user configuration
 
 ## Repository structure
 
@@ -142,6 +143,14 @@ NocoDB Control:
 - read rows from a selected table
 - explicit error handling for auth, missing resources, and upstream failures
 
+Setup Wizard:
+
+- guided multi-step setup forms
+- language choice French/English
+- runtime, paths, tools, and secret inputs
+- writes `config/app.json` and `.env` through backend API
+- applies changes immediately by refreshing runtime dependency caches
+
 ## API surface (current)
 
 System and admin:
@@ -150,6 +159,8 @@ System and admin:
 - `GET /api/v1/system/status`
 - `GET /api/v1/admin/overview`
 - `GET /api/v1/admin/diagnostics`
+- `GET /api/v1/setup/state`
+- `PUT /api/v1/setup/apply`
 
 Obsidian:
 

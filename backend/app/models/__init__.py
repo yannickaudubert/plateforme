@@ -5,6 +5,15 @@ from app.models.obsidian import (
     ObsidianUpdateNoteRequest,
     ObsidianWriteResponse,
 )
+from app.models.setup import (
+    SetupApplyRequest,
+    SetupApplyResponse,
+    SetupConfigurationState,
+    SetupObsidianInput,
+    SetupRuntimeInput,
+    SetupSecretsInput,
+    SetupToolsInput,
+)
 from app.models.system import (
     ActionLogEntry,
     AdminDiagnosticsResponse,
@@ -24,6 +33,13 @@ __all__ = [
     "ObsidianNoteContent",
     "ObsidianUpdateNoteRequest",
     "ObsidianWriteResponse",
+    "SetupApplyRequest",
+    "SetupApplyResponse",
+    "SetupConfigurationState",
+    "SetupObsidianInput",
+    "SetupRuntimeInput",
+    "SetupSecretsInput",
+    "SetupToolsInput",
     "SystemStatusResponse",
     "ToolHealth",
 ]

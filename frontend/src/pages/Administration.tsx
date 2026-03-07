@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { PageLayout } from "../components/PageLayout";
 import { fetchAdminDiagnostics, fetchAdminView } from "../lib/api";
 import { AdminDiagnostics, AdminView } from "../types/api";
@@ -31,6 +32,7 @@ export function Administration() {
       <button className="button" onClick={loadAdministration} type="button">
         Refresh diagnostics
       </button>
+      <Link className="button" to="/setup">Open setup wizard</Link>
       {!admin || !diagnostics ? <p>Loading administration overview...</p> : null}
       {admin ? (
         <div className="grid">

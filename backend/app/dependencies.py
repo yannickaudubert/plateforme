@@ -6,6 +6,7 @@ from app.config import RuntimeConfig, build_runtime_config
 from app.secrets import SecretSettings
 from app.services.adapter_registry import AdapterRegistry
 from app.services.journal_service import JournalService
+from app.services.setup_service import SetupService
 from app.services.status_service import StatusService
 
 
@@ -43,3 +44,18 @@ def get_status_service() -> StatusService:
         adapters=get_adapter_registry(),
         journal=get_journal_service(),
     )
+
+
+def clear_runtime_caches() -> None:
+    get_setup_service.cache_clear()
+    get_status_service.cache_clear()
+    get_journal_service.cache_clear()
+    get_adapter_registry.cache_clear()
+    get_secrets.cache_clear()
+    get_runtime_config.cache_clear()
+
+
+@lru_cache(maxsize=1)
+def get_setup_service() -> SetupService:
+    runtime = get_runtime_config()
+    return SetupService(config_file=runtime.config_file, env_file=runtime.env_file)

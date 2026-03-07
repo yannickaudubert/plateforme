@@ -24,6 +24,7 @@ Ce depot est maintenant une fondation operateur executable et testable:
 - journalisation des actions et endpoints de sante
 - flux Obsidian read/write securises
 - flux NocoDB en lecture (bases, tables, lignes) avec garde-fous d'authentification
+- assistant de configuration bilingue FR/EN en formulaires par etapes
 
 ## Structure du depot
 
@@ -142,6 +143,14 @@ NocoDB Control:
 - lecture des lignes d'une table
 - gestion explicite des erreurs d'auth, ressources absentes et erreurs upstream
 
+Assistant de configuration:
+
+- formulaires guides par etapes
+- choix de langue Francais/English
+- saisie runtime, chemins, endpoints outils et secrets
+- ecriture de `config/app.json` et `.env` via API backend
+- prise en compte immediate par rafraichissement des caches runtime
+
 ## Surface API (actuelle)
 
 Systeme et administration:
@@ -150,6 +159,8 @@ Systeme et administration:
 - `GET /api/v1/system/status`
 - `GET /api/v1/admin/overview`
 - `GET /api/v1/admin/diagnostics`
+- `GET /api/v1/setup/state`
+- `PUT /api/v1/setup/apply`
 
 Obsidian:
 

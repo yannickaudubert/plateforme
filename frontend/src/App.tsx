@@ -6,6 +6,7 @@ import { N8nOrchestrator } from "./pages/N8nOrchestrator";
 import { PerplexicaResearch } from "./pages/PerplexicaResearch";
 import { OpenWebUIOperator } from "./pages/OpenWebUIOperator";
 import { Administration } from "./pages/Administration";
+import { SetupWizard } from "./pages/SetupWizard";
 
 const navItems = [
   { path: "/", label: "Home" },
@@ -14,6 +15,7 @@ const navItems = [
   { path: "/n8n", label: "n8n Orchestrator" },
   { path: "/perplexica", label: "Perplexica Research" },
   { path: "/openwebui", label: "Open WebUI Operator" },
+  { path: "/setup", label: "Setup Wizard" },
   { path: "/admin", label: "Administration" }
 ];
 
@@ -46,6 +48,7 @@ function App() {
           <Route path="/n8n" element={<N8nOrchestrator />} />
           <Route path="/perplexica" element={<PerplexicaResearch />} />
           <Route path="/openwebui" element={<OpenWebUIOperator />} />
+          <Route path="/setup" element={<SetupWizard />} />
           <Route path="/admin" element={<Administration />} />
         </Routes>
       </main>

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import build_runtime_config
 from app.logging import log_action, setup_logging
-from app.routers import admin, health, nocodb, obsidian, system
+from app.routers import admin, health, nocodb, obsidian, setup, system
 
 runtime = build_runtime_config()
 
@@ -37,4 +37,5 @@ app.include_router(health.router)
 app.include_router(system.router)
 app.include_router(obsidian.router)
 app.include_router(nocodb.router)
+app.include_router(setup.router)
 app.include_router(admin.router)

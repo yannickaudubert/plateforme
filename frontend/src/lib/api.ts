@@ -8,6 +8,9 @@ import {
   ObsidianNoteContent,
   ObsidianUpdateNotePayload,
   ObsidianWriteResponse,
+  SetupApplyRequest,
+  SetupApplyResponse,
+  SetupConfigurationState,
   SystemStatus
 } from "../types/api";
 
@@ -43,6 +46,17 @@ export function fetchAdminView(): Promise<AdminView> {
 
 export function fetchAdminDiagnostics(): Promise<AdminDiagnostics> {
   return request<AdminDiagnostics>("/api/v1/admin/diagnostics");
+}
+
+export function fetchSetupState(): Promise<SetupConfigurationState> {
+  return request<SetupConfigurationState>("/api/v1/setup/state");
+}
+
+export function applySetupConfiguration(payload: SetupApplyRequest): Promise<SetupApplyResponse> {
+  return request<SetupApplyResponse>("/api/v1/setup/apply", {
+    method: "PUT",
+    body: JSON.stringify(payload)
+  });
 }
 
 export function fetchObsidianNotes(limit = 20): Promise<string[]> {

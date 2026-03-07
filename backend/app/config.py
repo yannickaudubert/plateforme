@@ -69,6 +69,7 @@ class EnvironmentSettings(BaseSettings):
 
     cockpit_config_file: str = "./config/app.json"
     cockpit_log_dir: str | None = None
+    cockpit_env_file: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=ROOT_DIR / ".env",
@@ -92,6 +93,7 @@ class RuntimeConfig(BaseModel):
     app_host: str
     app_port: int
     config_file: str
+    env_file: str
     log_dir: str
 
     obsidian_vault_path: str
@@ -130,6 +132,10 @@ def build_runtime_config() -> RuntimeConfig:
 
     file_config = _load_file_config(config_file)
 
+    env_file = Path(_pick_str(env.cockpit_env_file, default="./.env"))
+    if not env_file.is_absolute():
+        env_file = (ROOT_DIR / env_file).resolve()
+
     log_dir = Path(
         _pick_str(
             env.cockpit_log_dir,
@@ -151,6 +157,7 @@ def build_runtime_config() -> RuntimeConfig:
         app_host=_pick_str(env.app_host, file_config.runtime.app_host, default="0.0.0.0"),
         app_port=_pick_int(env.app_port, file_config.runtime.app_port, default=8000),
         config_file=str(config_file),
+        env_file=str(env_file),
         log_dir=str(log_dir),
         obsidian_vault_path=_pick_str(env.obsidian_vault_path, file_config.obsidian.vault_path, default="D:/Yannick"),
         obsidian_allowed_roots=allowed_roots,

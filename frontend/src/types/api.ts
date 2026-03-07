@@ -96,3 +96,56 @@ export interface NocoDBRowsResponse {
   total_rows: number | null;
   rows: Record<string, unknown>[];
 }
+
+export interface SetupRuntimeInput {
+  app_name: string;
+  app_env: string;
+  app_host: string;
+  app_port: number;
+  log_dir: string;
+}
+
+export interface SetupObsidianInput {
+  vault_path: string;
+  allowed_roots: string[];
+}
+
+export interface SetupToolsInput {
+  nocodb_base_url: string;
+  n8n_base_url: string;
+  perplexica_base_url: string;
+  openwebui_base_url: string;
+}
+
+export interface SetupSecretsInput {
+  nocodb_api_token?: string | null;
+  n8n_api_key?: string | null;
+  perplexica_api_key?: string | null;
+  openwebui_api_key?: string | null;
+}
+
+export interface SetupConfigurationState {
+  config_file: string;
+  env_file: string;
+  runtime: SetupRuntimeInput;
+  obsidian: SetupObsidianInput;
+  tools: SetupToolsInput;
+  secret_flags: Record<string, boolean>;
+}
+
+export interface SetupApplyRequest {
+  runtime: SetupRuntimeInput;
+  obsidian: SetupObsidianInput;
+  tools: SetupToolsInput;
+  secrets: SetupSecretsInput;
+  update_secrets: boolean;
+}
+
+export interface SetupApplyResponse {
+  status: string;
+  config_file: string;
+  env_file: string;
+  updated_env_keys: string[];
+  updated_secret_keys: string[];
+  warnings: string[];
+}
