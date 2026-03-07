@@ -88,6 +88,26 @@ Access points:
 - Backend docs: http://localhost:8000/docs
 - Backend health: http://localhost:8000/health
 
+## Setup Wizard (new)
+
+The setup wizard is available in the UI at `/setup`.
+
+Operator flow:
+
+1. Choose language (`French` or `English`)
+2. Fill runtime and Obsidian paths
+3. Fill tool endpoints
+4. Optionally enter secrets
+5. Review and apply
+
+When you apply:
+
+- `config/app.json` is updated
+- `.env` is updated
+- backend runtime caches are refreshed immediately
+
+If you run full stack with docker compose, re-run `.\scripts\up.ps1` after major endpoint or secret changes to fully align all services.
+
 ## Docker compose (local dev)
 
 ```powershell

@@ -88,6 +88,26 @@ Points d'acces:
 - Docs backend: http://localhost:8000/docs
 - Sante backend: http://localhost:8000/health
 
+## Assistant de configuration (nouveau)
+
+L'assistant est disponible dans l'UI sur `/setup`.
+
+Parcours operateur:
+
+1. Choisir la langue (`Francais` ou `English`)
+2. Renseigner runtime et chemins Obsidian
+3. Renseigner les endpoints outils
+4. Renseigner les secrets (optionnel)
+5. Verifier et appliquer
+
+Lors de l'application:
+
+- `config/app.json` est mis a jour
+- `.env` est mis a jour
+- les caches runtime backend sont rafraichis immediatement
+
+Si vous utilisez la stack complete docker compose, relancer `.\scripts\up.ps1` apres un changement majeur d'endpoints ou de secrets pour realigner tous les services.
+
 ## Docker compose (local dev)
 
 ```powershell
