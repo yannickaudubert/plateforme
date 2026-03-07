@@ -18,7 +18,8 @@
   },
   "tools": {
     "nocodb": {
-      "base_url": "http://localhost:8080"
+      "base_url": "http://localhost:8080",
+      "writable_tables": []
     },
     "n8n": {
       "base_url": "http://localhost:5678"

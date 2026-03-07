@@ -33,8 +33,12 @@ class FileToolConfig(BaseModel):
     base_url: str
 
 
+class FileNocoDBToolConfig(FileToolConfig):
+    writable_tables: list[str] = Field(default_factory=list)
+
+
 class FileToolsConfig(BaseModel):
-    nocodb: FileToolConfig = FileToolConfig(base_url="http://localhost:8080")
+    nocodb: FileNocoDBToolConfig = FileNocoDBToolConfig(base_url="http://localhost:8080")
     n8n: FileToolConfig = FileToolConfig(base_url="http://localhost:5678")
     perplexica: FileToolConfig = FileToolConfig(base_url="http://localhost:3001")
     openwebui: FileToolConfig = FileToolConfig(base_url="http://localhost:3000")
@@ -63,6 +67,7 @@ class EnvironmentSettings(BaseSettings):
     obsidian_allowed_roots: str | None = None
 
     nocodb_base_url: str | None = None
+    nocodb_writable_tables: str | None = None
     n8n_base_url: str | None = None
     perplexica_base_url: str | None = None
     openwebui_base_url: str | None = None
@@ -100,6 +105,7 @@ class RuntimeConfig(BaseModel):
     obsidian_allowed_roots: list[str]
 
     nocodb_base_url: str
+    nocodb_writable_tables: list[str]
     n8n_base_url: str
     perplexica_base_url: str
     openwebui_base_url: str
@@ -150,6 +156,10 @@ def build_runtime_config() -> RuntimeConfig:
         item.strip() for item in (env.obsidian_allowed_roots or "").split(",") if item.strip()
     ]
     allowed_roots = allowed_roots_env or file_config.obsidian.allowed_roots
+    nocodb_writable_tables_env = [
+        item.strip() for item in (env.nocodb_writable_tables or "").split(",") if item.strip()
+    ]
+    nocodb_writable_tables = nocodb_writable_tables_env or file_config.tools.nocodb.writable_tables
 
     return RuntimeConfig(
         app_name=_pick_str(env.app_name, file_config.runtime.app_name, default="Cockpit OS DSI Transverse"),
@@ -162,6 +172,7 @@ def build_runtime_config() -> RuntimeConfig:
         obsidian_vault_path=_pick_str(env.obsidian_vault_path, file_config.obsidian.vault_path, default="D:/Yannick"),
         obsidian_allowed_roots=allowed_roots,
         nocodb_base_url=_pick_str(env.nocodb_base_url, file_config.tools.nocodb.base_url, default="http://localhost:8080"),
+        nocodb_writable_tables=nocodb_writable_tables,
         n8n_base_url=_pick_str(env.n8n_base_url, file_config.tools.n8n.base_url, default="http://localhost:5678"),
         perplexica_base_url=_pick_str(env.perplexica_base_url, file_config.tools.perplexica.base_url, default="http://localhost:3001"),
         openwebui_base_url=_pick_str(env.openwebui_base_url, file_config.tools.openwebui.base_url, default="http://localhost:3000"),

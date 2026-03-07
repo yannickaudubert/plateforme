@@ -21,9 +21,12 @@ Ce depot est maintenant une fondation operateur executable et testable:
 - architecture modulaire claire (`frontend`, `backend`, `config`, `docs`, `scripts`)
 - sept pages operateur en React + TypeScript
 - backend FastAPI avec adapters explicites par outil
-- journalisation des actions et endpoints de sante
+- journalisation des actions persistee en SQLite et endpoints de sante
 - flux Obsidian read/write securises
-- flux NocoDB en lecture (bases, tables, lignes) avec garde-fous d'authentification
+- flux NocoDB en lecture + ecriture securisee (bases, tables, lignes, create/update) avec garde-fous d'authentification et allowlist
+- controles operateur n8n (workflows, executions, activation/desactivation)
+- actions Perplexica avec conversion optionnelle en note Obsidian
+- actions Open WebUI (models/chat) avec conversion optionnelle en note Obsidian
 - assistant de configuration bilingue FR/EN en formulaires par etapes
 
 ## Structure du depot
@@ -47,6 +50,7 @@ Variables cles dans `.env`:
 
 - `OBSIDIAN_VAULT_PATH` racine du vault canonique (defaut `D:/Yannick`)
 - `OBSIDIAN_ALLOWED_ROOTS` racines autorisees pour les actions Obsidian
+- `NOCODB_WRITABLE_TABLES` allowlist des tables NocoDB ecrivable (IDs separes par virgule)
 - `NOCODB_BASE_URL`, `N8N_BASE_URL`, `PERPLEXICA_BASE_URL`, `OPENWEBUI_BASE_URL`
 - `NOCODB_API_TOKEN` requis pour les endpoints de lecture NocoDB
 
@@ -96,7 +100,7 @@ Parcours operateur:
 
 1. Choisir la langue (`Francais` ou `English`)
 2. Renseigner runtime et chemins Obsidian
-3. Renseigner les endpoints outils
+3. Renseigner les endpoints outils et le scope d'ecriture NocoDB
 4. Renseigner les secrets (optionnel)
 5. Verifier et appliquer
 
@@ -161,7 +165,27 @@ NocoDB Control:
 - liste des bases
 - liste des tables d'une base
 - lecture des lignes d'une table
+- create/update de lignes avec confirmation explicite
+- garde-fous d'ecriture via allowlist `NOCODB_WRITABLE_TABLES`
 - gestion explicite des erreurs d'auth, ressources absentes et erreurs upstream
+
+n8n Orchestrator:
+
+- liste des workflows
+- liste des executions recentes
+- activation/desactivation de workflows avec confirmation
+
+Perplexica Research:
+
+- execution de recherche
+- affichage de la reponse et des sources
+- conversion du resultat en note Obsidian
+
+Open WebUI Operator:
+
+- liste des modeles disponibles
+- execution de chat completion
+- conversion du chat en note Obsidian
 
 Assistant de configuration:
 
@@ -194,6 +218,26 @@ NocoDB:
 - `GET /api/v1/nocodb/bases`
 - `GET /api/v1/nocodb/bases/{base_id}/tables`
 - `GET /api/v1/nocodb/tables/{table_id}/rows?base_id=...&limit=...&offset=...`
+- `POST /api/v1/nocodb/tables/{table_id}/rows`
+- `PATCH /api/v1/nocodb/tables/{table_id}/rows/{row_id}`
+
+n8n:
+
+- `GET /api/v1/n8n/workflows?limit=...`
+- `GET /api/v1/n8n/executions?limit=...`
+- `POST /api/v1/n8n/workflows/{workflow_id}/activate`
+- `POST /api/v1/n8n/workflows/{workflow_id}/deactivate`
+
+Perplexica:
+
+- `POST /api/v1/perplexica/search`
+- `POST /api/v1/perplexica/search-to-note`
+
+Open WebUI:
+
+- `GET /api/v1/openwebui/models`
+- `POST /api/v1/openwebui/chat`
+- `POST /api/v1/openwebui/chat-to-note`
 
 ## Notes securite et surete
 
@@ -201,7 +245,9 @@ NocoDB:
 - les chemins hors racine autorisee et les traversals relatifs sont rejetes.
 - les secrets ne sont jamais renvoyes par l'API, seulement des flags booleens dans l'overview admin.
 - le journal masque les cles contenant `secret`, `token` ou `key`.
+- le journal est persiste en SQLite local (`logs/actions.sqlite3`).
 - les APIs NocoDB repondent `401` si `NOCODB_API_TOKEN` est absent/invalide.
+- les ecritures NocoDB sont bloquees par defaut tant que `NOCODB_WRITABLE_TABLES` n'est pas configure.
 
 ## Validation et tests
 
@@ -223,6 +269,6 @@ npm run build
 
 ## Limites actuelles
 
-- n8n, Perplexica et Open WebUI ont un scaffolding de sante mais pas encore d'integration metier profonde.
-- le scope NocoDB est lecture seule dans cette iteration.
-- la persistance du journal est basee sur fichier (migration SQLite prevue ensuite).
+- le scope n8n actuel couvre surtout liste workflows/executions et activation/desactivation (pas encore de pilotage complet des runs avec payload).
+- les integrations Perplexica/Open WebUI exposent des actions unitaires (query/chat + conversion note), pas encore la gestion complete d'historiques/sessions.
+- les ecritures NocoDB dependent de la compatibilite de l'API upstream et d'une allowlist explicite de tables.

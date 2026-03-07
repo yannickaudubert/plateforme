@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { PageLayout } from "../components/PageLayout";
-import { fetchNocoDBBases, fetchNocoDBRows, fetchNocoDBTables } from "../lib/api";
+import { createNocoDBRow, fetchNocoDBBases, fetchNocoDBRows, fetchNocoDBTables, updateNocoDBRow } from "../lib/api";
 import { NocoDBBaseSummary, NocoDBRowsResponse, NocoDBTableSummary } from "../types/api";
+
+function parseJsonRecord(raw: string): Record<string, unknown> {
+  const parsed = JSON.parse(raw) as unknown;
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new Error("Payload must be a JSON object");
+  }
+  return parsed as Record<string, unknown>;
+}
 
 export function NocoDBControl() {
   const [bases, setBases] = useState<NocoDBBaseSummary[]>([]);
@@ -15,6 +23,13 @@ export function NocoDBControl() {
   const [isLoadingBases, setIsLoadingBases] = useState<boolean>(false);
   const [isLoadingTables, setIsLoadingTables] = useState<boolean>(false);
   const [isLoadingRows, setIsLoadingRows] = useState<boolean>(false);
+  const [createPayloadText, setCreatePayloadText] = useState<string>('{"Title": "Example"}');
+  const [updateRowId, setUpdateRowId] = useState<string>("");
+  const [updatePayloadText, setUpdatePayloadText] = useState<string>('{"Title": "Updated"}');
+  const [confirmCreate, setConfirmCreate] = useState<boolean>(false);
+  const [confirmUpdate, setConfirmUpdate] = useState<boolean>(false);
+  const [isCreatingRow, setIsCreatingRow] = useState<boolean>(false);
+  const [isUpdatingRow, setIsUpdatingRow] = useState<boolean>(false);
 
   const loadBases = async () => {
     setIsLoadingBases(true);
@@ -102,6 +117,53 @@ export function NocoDBControl() {
     void loadTables(selectedBaseId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedBaseId]);
+
+  const createRow = async () => {
+    if (!selectedTableId) {
+      return;
+    }
+    setIsCreatingRow(true);
+    setError(null);
+    setInfo(null);
+    try {
+      const data = parseJsonRecord(createPayloadText);
+      const result = await createNocoDBRow(selectedTableId, {
+        base_id: selectedBaseId || null,
+        data,
+        confirm_write: confirmCreate
+      });
+      setInfo(`Row created on table ${result.table_id}.`);
+      await loadRows(selectedTableId, selectedBaseId);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsCreatingRow(false);
+    }
+  };
+
+  const updateRow = async () => {
+    if (!selectedTableId || !updateRowId.trim()) {
+      setError("Table ID and row ID are required for update.");
+      return;
+    }
+    setIsUpdatingRow(true);
+    setError(null);
+    setInfo(null);
+    try {
+      const data = parseJsonRecord(updatePayloadText);
+      const result = await updateNocoDBRow(selectedTableId, updateRowId.trim(), {
+        base_id: selectedBaseId || null,
+        data,
+        confirm_write: confirmUpdate
+      });
+      setInfo(`Row ${updateRowId.trim()} updated on table ${result.table_id}.`);
+      await loadRows(selectedTableId, selectedBaseId);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsUpdatingRow(false);
+    }
+  };
 
   const columns = rowsResponse && rowsResponse.rows.length > 0 ? Object.keys(rowsResponse.rows[0]) : [];
 
@@ -216,6 +278,78 @@ export function NocoDBControl() {
             </table>
           </div>
         ) : null}
+      </section>
+
+      <section className="panel">
+        <h3>Safe write actions</h3>
+        <p>
+          Write operations require both confirmation and backend allowlist (`NOCODB_WRITABLE_TABLES`).
+        </p>
+
+        <h4>Create row</h4>
+        <label className="label" htmlFor="nocodb-create-payload">
+          JSON payload
+        </label>
+        <textarea
+          id="nocodb-create-payload"
+          className="textarea"
+          rows={6}
+          value={createPayloadText}
+          onChange={(event) => setCreatePayloadText(event.target.value)}
+        />
+        <label className="label">
+          <input
+            type="checkbox"
+            checked={confirmCreate}
+            onChange={(event) => setConfirmCreate(event.target.checked)}
+          />{" "}
+          Confirm create write
+        </label>
+        <button
+          className="button"
+          type="button"
+          onClick={() => void createRow()}
+          disabled={isCreatingRow || !selectedTableId}
+        >
+          {isCreatingRow ? "Creating..." : "Create row"}
+        </button>
+
+        <h4>Update row</h4>
+        <label className="label" htmlFor="nocodb-update-row-id">
+          Row ID
+        </label>
+        <input
+          id="nocodb-update-row-id"
+          className="input"
+          value={updateRowId}
+          onChange={(event) => setUpdateRowId(event.target.value)}
+        />
+        <label className="label" htmlFor="nocodb-update-payload">
+          JSON payload
+        </label>
+        <textarea
+          id="nocodb-update-payload"
+          className="textarea"
+          rows={6}
+          value={updatePayloadText}
+          onChange={(event) => setUpdatePayloadText(event.target.value)}
+        />
+        <label className="label">
+          <input
+            type="checkbox"
+            checked={confirmUpdate}
+            onChange={(event) => setConfirmUpdate(event.target.checked)}
+          />{" "}
+          Confirm update write
+        </label>
+        <button
+          className="button"
+          type="button"
+          onClick={() => void updateRow()}
+          disabled={isUpdatingRow || !selectedTableId || !updateRowId.trim()}
+        >
+          {isUpdatingRow ? "Updating..." : "Update row"}
+        </button>
       </section>
     </PageLayout>
   );

@@ -67,3 +67,29 @@ def test_list_rows_parses_page_info(monkeypatch) -> None:
     assert rows.row_count == 2
     assert rows.total_rows == 2
     assert rows.rows[0]["Name"] == "Alpha"
+
+
+def test_create_row_falls_back_from_v2_to_v1(monkeypatch) -> None:
+    calls: list[tuple[str, str]] = []
+
+    def _fake_request(method, url, **kwargs):
+        calls.append((method, url))
+        if url.endswith("/api/v2/tables/tbl_123/records"):
+            return _FakeResponse(status_code=404, payload={"msg": "Cannot POST /api/v2/tables/tbl_123/records"})
+        return _FakeResponse(status_code=200, payload={"Id": 99, "Name": "Gamma"})
+
+    monkeypatch.setattr("app.adapters.nocodb.httpx.request", _fake_request)
+
+    adapter = NocoDBAdapter(base_url="http://localhost:8080", api_token="token")
+    row = adapter.create_row(table_id="tbl_123", data={"Name": "Gamma"}, base_id="base_main")
+
+    assert row["Name"] == "Gamma"
+    assert calls[0][0] == "POST"
+    assert calls[0][1].endswith("/api/v2/tables/tbl_123/records")
+    assert calls[-1][1].endswith("/api/v1/db/data/v1/base_main/tbl_123")
+
+
+def test_update_row_requires_token() -> None:
+    adapter = NocoDBAdapter(base_url="http://localhost:8080", api_token=None)
+    with pytest.raises(NocoDBAuthenticationError):
+        adapter.update_row(table_id="tbl_123", row_id="1", data={"Name": "Delta"})

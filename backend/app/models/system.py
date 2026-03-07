@@ -28,6 +28,7 @@ class AdminOverviewResponse(BaseModel):
     config_file: str
     obsidian_vault_path: str
     obsidian_allowed_roots: list[str]
+    nocodb_writable_tables: list[str]
     tools: dict[str, str]
     secrets: dict[str, bool]
 

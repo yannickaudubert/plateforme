@@ -56,6 +56,11 @@ class NocoDBAdapter:
                     return value.strip()
         return "NocoDB request failed"
 
+    @staticmethod
+    def _is_endpoint_message(detail: str) -> bool:
+        lowered = detail.lower()
+        return lowered.startswith("cannot get") or lowered.startswith("cannot post") or lowered.startswith("cannot patch")
+
     def _api_get(
         self,
         path: str,
@@ -82,7 +87,7 @@ class NocoDBAdapter:
             raise NocoDBAuthenticationError("NocoDB authentication failed (invalid token)")
         if response.status_code == 404:
             detail = self._extract_error_message(response)
-            if detail.lower().startswith("cannot get"):
+            if self._is_endpoint_message(detail):
                 raise NocoDBEndpointNotAvailableError(detail)
             raise NocoDBNotFoundError(detail)
         if response.status_code >= 400:
@@ -92,6 +97,46 @@ class NocoDBAdapter:
             return response.json()
         except ValueError as exc:
             raise NocoDBRequestError("NocoDB returned a non-JSON response") from exc
+
+    def _api_write(self, method: str, path: str, payload: dict[str, Any]) -> Any:
+        if not self.base_url:
+            raise NocoDBRequestError("NocoDB base URL is not configured")
+        if not self.api_token:
+            raise NocoDBAuthenticationError("NocoDB API token is required for write operations")
+
+        url = f"{self.base_url}{path}"
+        try:
+            response = httpx.request(
+                method=method,
+                url=url,
+                headers=self._headers(),
+                json=payload,
+                timeout=8.0,
+                follow_redirects=True,
+            )
+        except httpx.RequestError as exc:
+            raise NocoDBRequestError(f"NocoDB request failed: {exc.__class__.__name__}") from exc
+
+        if response.status_code == 401:
+            raise NocoDBAuthenticationError("NocoDB authentication failed (invalid token)")
+        if response.status_code == 404:
+            detail = self._extract_error_message(response)
+            if self._is_endpoint_message(detail):
+                raise NocoDBEndpointNotAvailableError(detail)
+            raise NocoDBNotFoundError(detail)
+        if response.status_code == 405:
+            detail = self._extract_error_message(response)
+            raise NocoDBEndpointNotAvailableError(detail)
+        if response.status_code >= 400:
+            raise NocoDBRequestError(self._extract_error_message(response))
+
+        text = response.text.strip()
+        if not text:
+            return {}
+        try:
+            return response.json()
+        except ValueError:
+            return {"message": text}
 
     def _request_with_fallback(
         self,
@@ -108,6 +153,25 @@ class NocoDBAdapter:
         if last_error is not None:
             raise last_error
         raise NocoDBRequestError("No endpoint path available for this request")
+
+    def _write_with_fallback(
+        self,
+        method: str,
+        candidates: list[tuple[str, dict[str, Any]]],
+    ) -> Any:
+        last_error: Exception | None = None
+        for path, payload in candidates:
+            try:
+                return self._api_write(method=method, path=path, payload=payload)
+            except NocoDBEndpointNotAvailableError as exc:
+                last_error = exc
+                continue
+            except NocoDBNotFoundError as exc:
+                last_error = exc
+                continue
+        if last_error is not None:
+            raise last_error
+        raise NocoDBRequestError("No endpoint path available for this write operation")
 
     @staticmethod
     def _extract_list(payload: Any) -> list[dict[str, Any]]:
@@ -135,6 +199,23 @@ class NocoDBAdapter:
             if isinstance(value, str) and value.strip():
                 return value.strip()
         return ""
+
+    @staticmethod
+    def _extract_row(payload: Any) -> dict[str, Any]:
+        if isinstance(payload, dict):
+            for key in ("record", "row", "data"):
+                value = payload.get(key)
+                if isinstance(value, dict):
+                    return value
+            for key in ("records", "list", "rows"):
+                value = payload.get(key)
+                if isinstance(value, list) and value and isinstance(value[0], dict):
+                    return value[0]
+            if payload:
+                return payload
+        if isinstance(payload, list) and payload and isinstance(payload[0], dict):
+            return payload[0]
+        return {}
 
     def health(self) -> ToolHealth:
         checked_at = datetime.now(timezone.utc).isoformat()
@@ -251,3 +332,39 @@ class NocoDBAdapter:
             total_rows=total_rows,
             rows=rows,
         )
+
+    def create_row(self, table_id: str, data: dict[str, Any], base_id: str | None = None) -> dict[str, Any]:
+        if not data:
+            raise NocoDBRequestError("NocoDB row payload cannot be empty")
+        candidates: list[tuple[str, dict[str, Any]]] = [
+            (f"/api/v2/tables/{table_id}/records", {"records": [data]}),
+            (f"/api/v2/tables/{table_id}/records", data),
+        ]
+        if base_id:
+            candidates.append((f"/api/v1/db/data/v1/{base_id}/{table_id}", data))
+
+        payload = self._write_with_fallback(method="POST", candidates=candidates)
+        row = self._extract_row(payload)
+        return row or data
+
+    def update_row(
+        self,
+        table_id: str,
+        row_id: str,
+        data: dict[str, Any],
+        base_id: str | None = None,
+    ) -> dict[str, Any]:
+        if not data:
+            raise NocoDBRequestError("NocoDB row payload cannot be empty")
+        record_with_id = {"Id": row_id, **data}
+        candidates: list[tuple[str, dict[str, Any]]] = [
+            (f"/api/v2/tables/{table_id}/records", {"records": [record_with_id]}),
+            (f"/api/v2/tables/{table_id}/records/{row_id}", data),
+            (f"/api/v2/tables/{table_id}/records", record_with_id),
+        ]
+        if base_id:
+            candidates.append((f"/api/v1/db/data/v1/{base_id}/{table_id}/{row_id}", data))
+
+        payload = self._write_with_fallback(method="PATCH", candidates=candidates)
+        row = self._extract_row(payload)
+        return row or {"id": row_id, **data}

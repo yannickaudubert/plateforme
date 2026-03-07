@@ -51,6 +51,7 @@ export function Administration() {
             <h3>Tool endpoints</h3>
             <ul className="list">
               <li>NocoDB: {admin.tools.nocodb_base_url}</li>
+              <li>NocoDB writable tables: {admin.nocodb_writable_tables.length > 0 ? admin.nocodb_writable_tables.join(", ") : "(none)"}</li>
               <li>n8n: {admin.tools.n8n_base_url}</li>
               <li>Perplexica: {admin.tools.perplexica_base_url}</li>
               <li>Open WebUI: {admin.tools.openwebui_base_url}</li>

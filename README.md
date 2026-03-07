@@ -21,9 +21,12 @@ This repository is now an executable and testable operator foundation:
 - clean modular architecture (`frontend`, `backend`, `config`, `docs`, `scripts`)
 - seven operator pages in React + TypeScript
 - FastAPI backend with explicit adapters per tool
-- action journaling and health status endpoints
+- action journaling persisted in SQLite and health status endpoints
 - safe Obsidian read/write flows
-- NocoDB read flows (bases, tables, rows) with auth guardrails
+- NocoDB read + safe write flows (bases, tables, rows, create/update) with auth and allowlist guardrails
+- n8n operator controls (workflows, executions, activate/deactivate)
+- Perplexica research actions with optional conversion to Obsidian note
+- Open WebUI model/chat actions with optional conversion to Obsidian note
 - bilingual setup wizard (French/English) for step-by-step user configuration
 
 ## Repository structure
@@ -47,6 +50,7 @@ Key variables in `.env`:
 
 - `OBSIDIAN_VAULT_PATH` canonical vault root (default `D:/Yannick`)
 - `OBSIDIAN_ALLOWED_ROOTS` allowed filesystem roots for Obsidian actions
+- `NOCODB_WRITABLE_TABLES` comma-separated allowlist for NocoDB write operations
 - `NOCODB_BASE_URL`, `N8N_BASE_URL`, `PERPLEXICA_BASE_URL`, `OPENWEBUI_BASE_URL`
 - `NOCODB_API_TOKEN` required for NocoDB read endpoints
 
@@ -96,7 +100,7 @@ Operator flow:
 
 1. Choose language (`French` or `English`)
 2. Fill runtime and Obsidian paths
-3. Fill tool endpoints
+3. Fill tool endpoints and NocoDB writable table scope
 4. Optionally enter secrets
 5. Review and apply
 
@@ -161,7 +165,27 @@ NocoDB Control:
 - list bases
 - list tables in a selected base
 - read rows from a selected table
+- create/update rows with explicit confirmation
+- write guardrails via `NOCODB_WRITABLE_TABLES` allowlist
 - explicit error handling for auth, missing resources, and upstream failures
+
+n8n Orchestrator:
+
+- list workflows
+- list recent executions
+- activate/deactivate workflows with confirmation
+
+Perplexica Research:
+
+- execute research query
+- inspect answer and sources
+- convert search result to Obsidian note
+
+Open WebUI Operator:
+
+- list available models
+- run chat completion
+- convert chat result to Obsidian note
 
 Setup Wizard:
 
@@ -194,6 +218,26 @@ NocoDB:
 - `GET /api/v1/nocodb/bases`
 - `GET /api/v1/nocodb/bases/{base_id}/tables`
 - `GET /api/v1/nocodb/tables/{table_id}/rows?base_id=...&limit=...&offset=...`
+- `POST /api/v1/nocodb/tables/{table_id}/rows`
+- `PATCH /api/v1/nocodb/tables/{table_id}/rows/{row_id}`
+
+n8n:
+
+- `GET /api/v1/n8n/workflows?limit=...`
+- `GET /api/v1/n8n/executions?limit=...`
+- `POST /api/v1/n8n/workflows/{workflow_id}/activate`
+- `POST /api/v1/n8n/workflows/{workflow_id}/deactivate`
+
+Perplexica:
+
+- `POST /api/v1/perplexica/search`
+- `POST /api/v1/perplexica/search-to-note`
+
+Open WebUI:
+
+- `GET /api/v1/openwebui/models`
+- `POST /api/v1/openwebui/chat`
+- `POST /api/v1/openwebui/chat-to-note`
 
 ## Safety and security notes
 
@@ -201,7 +245,9 @@ NocoDB:
 - relative traversal and out-of-root paths are rejected.
 - secrets are never returned by API, only boolean flags in admin overview.
 - journal sanitizes keys containing `secret`, `token`, or `key`.
+- journal persistence uses local SQLite (`logs/actions.sqlite3`).
 - NocoDB read APIs return `401` when `NOCODB_API_TOKEN` is missing/invalid.
+- NocoDB writes are disabled by default until `NOCODB_WRITABLE_TABLES` is configured.
 
 ## Validation and tests
 
@@ -223,6 +269,6 @@ npm run build
 
 ## Current limitations
 
-- n8n, Perplexica, and Open WebUI are health-scaffolded but not yet deeply integrated.
-- NocoDB scope is read-only in this iteration.
-- journal persistence is file-based (SQLite migration planned later).
+- n8n scope currently focuses on workflow listing/execution visibility and activate/deactivate (no run payload orchestration yet).
+- Perplexica and Open WebUI integrations currently expose single-query/chat actions plus note conversion, not full session/history control.
+- NocoDB writes depend on upstream API compatibility and explicit table allowlist configuration.

@@ -20,7 +20,10 @@ def _write_config(path: Path) -> None:
             "allowed_roots": ["D:/FileVault", "D:/FileShared"],
         },
         "tools": {
-            "nocodb": {"base_url": "http://file-nocodb:8080"},
+            "nocodb": {
+                "base_url": "http://file-nocodb:8080",
+                "writable_tables": ["tbl_file_a", "tbl_file_b"],
+            },
             "n8n": {"base_url": "http://file-n8n:5678"},
             "perplexica": {"base_url": "http://file-perplexica:3001"},
             "openwebui": {"base_url": "http://file-openwebui:3000"},
@@ -42,6 +45,7 @@ def test_build_runtime_config_uses_file_values_when_env_is_blank(tmp_path: Path,
     monkeypatch.setenv("OBSIDIAN_VAULT_PATH", " ")
     monkeypatch.setenv("OBSIDIAN_ALLOWED_ROOTS", " ")
     monkeypatch.setenv("NOCODB_BASE_URL", " ")
+    monkeypatch.setenv("NOCODB_WRITABLE_TABLES", " ")
     monkeypatch.setenv("N8N_BASE_URL", " ")
     monkeypatch.setenv("PERPLEXICA_BASE_URL", " ")
     monkeypatch.setenv("OPENWEBUI_BASE_URL", " ")
@@ -56,6 +60,7 @@ def test_build_runtime_config_uses_file_values_when_env_is_blank(tmp_path: Path,
     assert runtime.obsidian_vault_path == "D:/FileVault"
     assert runtime.obsidian_allowed_roots == ["D:/FileVault", "D:/FileShared"]
     assert runtime.nocodb_base_url == "http://file-nocodb:8080"
+    assert runtime.nocodb_writable_tables == ["tbl_file_a", "tbl_file_b"]
     assert runtime.n8n_base_url == "http://file-n8n:5678"
     assert runtime.perplexica_base_url == "http://file-perplexica:3001"
     assert runtime.openwebui_base_url == "http://file-openwebui:3000"
@@ -75,6 +80,7 @@ def test_build_runtime_config_env_overrides_file(tmp_path: Path, monkeypatch) ->
     monkeypatch.setenv("OBSIDIAN_VAULT_PATH", "D:/EnvVault")
     monkeypatch.setenv("OBSIDIAN_ALLOWED_ROOTS", "D:/EnvVault,D:/Other")
     monkeypatch.setenv("NOCODB_BASE_URL", "http://env-nocodb:8080")
+    monkeypatch.setenv("NOCODB_WRITABLE_TABLES", "tbl_env_a,tbl_env_b")
     monkeypatch.setenv("N8N_BASE_URL", "http://env-n8n:5678")
     monkeypatch.setenv("PERPLEXICA_BASE_URL", "http://env-perplexica:3001")
     monkeypatch.setenv("OPENWEBUI_BASE_URL", "http://env-openwebui:3000")
@@ -89,6 +95,7 @@ def test_build_runtime_config_env_overrides_file(tmp_path: Path, monkeypatch) ->
     assert runtime.obsidian_vault_path == "D:/EnvVault"
     assert runtime.obsidian_allowed_roots == ["D:/EnvVault", "D:/Other"]
     assert runtime.nocodb_base_url == "http://env-nocodb:8080"
+    assert runtime.nocodb_writable_tables == ["tbl_env_a", "tbl_env_b"]
     assert runtime.n8n_base_url == "http://env-n8n:5678"
     assert runtime.perplexica_base_url == "http://env-perplexica:3001"
     assert runtime.openwebui_base_url == "http://env-openwebui:3000"

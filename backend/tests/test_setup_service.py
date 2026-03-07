@@ -24,6 +24,7 @@ def _request() -> SetupApplyRequest:
         ),
         tools=SetupToolsInput(
             nocodb_base_url="http://localhost:8080",
+            nocodb_writable_tables=["tbl_projects", "tbl_actions"],
             n8n_base_url="http://localhost:5678",
             perplexica_base_url="http://localhost:3001",
             openwebui_base_url="http://localhost:3000",
@@ -49,10 +50,12 @@ def test_apply_writes_config_and_env(tmp_path: Path) -> None:
     assert config_data["runtime"]["app_name"] == "Cockpit Test"
     assert config_data["obsidian"]["allowed_roots"] == ["D:/Vault", "D:/Shared"]
     assert config_data["tools"]["nocodb"]["base_url"] == "http://localhost:8080"
+    assert config_data["tools"]["nocodb"]["writable_tables"] == ["tbl_projects", "tbl_actions"]
 
     env_text = env_file.read_text(encoding="utf-8")
     assert 'APP_NAME="Cockpit Test"' in env_text
     assert "NOCODB_API_TOKEN=token-123" in env_text
+    assert "NOCODB_WRITABLE_TABLES=tbl_projects,tbl_actions" in env_text
     assert "OBSIDIAN_ALLOWED_ROOTS=D:/Vault,D:/Shared" in env_text
 
 

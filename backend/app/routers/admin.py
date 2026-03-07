@@ -20,6 +20,7 @@ def admin_overview(config: RuntimeConfig = Depends(get_runtime_config)) -> Admin
         config_file=config.config_file,
         obsidian_vault_path=config.obsidian_vault_path,
         obsidian_allowed_roots=config.obsidian_allowed_roots,
+        nocodb_writable_tables=config.nocodb_writable_tables,
         tools={
             "nocodb_base_url": config.nocodb_base_url,
             "n8n_base_url": config.n8n_base_url,
@@ -73,6 +74,8 @@ def admin_diagnostics(
         recommendations.append("Obsidian vault path is missing. Update OBSIDIAN_VAULT_PATH.")
     if not secret_flags["nocodb_token_set"]:
         recommendations.append("Set NOCODB_API_TOKEN for NocoDB read operations.")
+    if len(config.nocodb_writable_tables) == 0:
+        recommendations.append("Set NOCODB_WRITABLE_TABLES to enable explicit NocoDB write scope.")
     if not files["docker_compose_full"]:
         recommendations.append("docker-compose.full.yml is missing; full stack deployment is unavailable.")
 

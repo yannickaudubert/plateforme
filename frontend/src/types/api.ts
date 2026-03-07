@@ -25,6 +25,7 @@ export interface AdminView {
   config_file: string;
   obsidian_vault_path: string;
   obsidian_allowed_roots: string[];
+  nocodb_writable_tables: string[];
   tools: {
     nocodb_base_url: string;
     n8n_base_url: string;
@@ -97,6 +98,106 @@ export interface NocoDBRowsResponse {
   rows: Record<string, unknown>[];
 }
 
+export interface NocoDBRowWritePayload {
+  base_id?: string | null;
+  data: Record<string, unknown>;
+  confirm_write: boolean;
+}
+
+export interface NocoDBRowMutationResponse {
+  table_id: string;
+  base_id: string | null;
+  operation: "create" | "update";
+  row: Record<string, unknown>;
+}
+
+export interface N8nWorkflowSummary {
+  id: string;
+  name: string;
+  active: boolean;
+  updated_at: string | null;
+}
+
+export interface N8nExecutionSummary {
+  id: string;
+  workflow_id: string | null;
+  status: string;
+  mode: string | null;
+  started_at: string | null;
+  stopped_at: string | null;
+}
+
+export interface N8nWorkflowActionPayload {
+  confirm: boolean;
+}
+
+export interface N8nWorkflowActionResponse {
+  workflow_id: string;
+  action: "activate" | "deactivate";
+  status: string;
+  message: string;
+}
+
+export interface PerplexicaSearchPayload {
+  query: string;
+  focus_mode?: string | null;
+  optimization_mode?: string | null;
+}
+
+export interface PerplexicaSearchResponse {
+  query: string;
+  answer: string;
+  sources: string[];
+  raw: Record<string, unknown>;
+}
+
+export interface PerplexicaSearchToNotePayload extends PerplexicaSearchPayload {
+  note_path: string;
+  create_parents?: boolean;
+}
+
+export interface PerplexicaSearchToNoteResponse {
+  query: string;
+  answer: string;
+  sources: string[];
+  note_path: string;
+  source_count: number;
+  bytes_written: number;
+  modified_at: string;
+}
+
+export interface OpenWebUIModelSummary {
+  id: string;
+  name: string | null;
+}
+
+export interface OpenWebUIChatPayload {
+  model: string;
+  prompt: string;
+  system_prompt?: string | null;
+  temperature?: number | null;
+  max_tokens?: number | null;
+}
+
+export interface OpenWebUIChatResponse {
+  model: string;
+  answer: string;
+  usage: Record<string, unknown> | null;
+}
+
+export interface OpenWebUIChatToNotePayload extends OpenWebUIChatPayload {
+  note_path: string;
+  create_parents?: boolean;
+}
+
+export interface OpenWebUIChatToNoteResponse {
+  model: string;
+  note_path: string;
+  answer: string;
+  bytes_written: number;
+  modified_at: string;
+}
+
 export interface SetupRuntimeInput {
   app_name: string;
   app_env: string;
@@ -112,6 +213,7 @@ export interface SetupObsidianInput {
 
 export interface SetupToolsInput {
   nocodb_base_url: string;
+  nocodb_writable_tables: string[];
   n8n_base_url: string;
   perplexica_base_url: string;
   openwebui_base_url: string;

@@ -36,6 +36,9 @@ class SetupService:
         cleaned_roots = [item.strip() for item in payload.obsidian.allowed_roots if item.strip()]
         if not cleaned_roots:
             raise SetupValidationError("obsidian.allowed_roots cannot be blank")
+        cleaned_nocodb_writable_tables = [
+            item.strip() for item in payload.tools.nocodb_writable_tables if item.strip()
+        ]
 
         config_data = self._read_config_data()
         config_data.setdefault("runtime", {})
@@ -56,6 +59,7 @@ class SetupService:
         config_data["obsidian"]["allowed_roots"] = cleaned_roots
 
         config_data["tools"]["nocodb"]["base_url"] = payload.tools.nocodb_base_url
+        config_data["tools"]["nocodb"]["writable_tables"] = cleaned_nocodb_writable_tables
         config_data["tools"]["n8n"]["base_url"] = payload.tools.n8n_base_url
         config_data["tools"]["perplexica"]["base_url"] = payload.tools.perplexica_base_url
         config_data["tools"]["openwebui"]["base_url"] = payload.tools.openwebui_base_url
@@ -71,6 +75,7 @@ class SetupService:
             "OBSIDIAN_VAULT_PATH": payload.obsidian.vault_path,
             "OBSIDIAN_ALLOWED_ROOTS": ",".join(cleaned_roots),
             "NOCODB_BASE_URL": payload.tools.nocodb_base_url,
+            "NOCODB_WRITABLE_TABLES": ",".join(cleaned_nocodb_writable_tables),
             "N8N_BASE_URL": payload.tools.n8n_base_url,
             "PERPLEXICA_BASE_URL": payload.tools.perplexica_base_url,
             "OPENWEBUI_BASE_URL": payload.tools.openwebui_base_url,

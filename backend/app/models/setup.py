@@ -18,6 +18,7 @@ class SetupObsidianInput(BaseModel):
 
 class SetupToolsInput(BaseModel):
     nocodb_base_url: str = Field(min_length=1, max_length=500)
+    nocodb_writable_tables: list[str] = Field(default_factory=list)
     n8n_base_url: str = Field(min_length=1, max_length=500)
     perplexica_base_url: str = Field(min_length=1, max_length=500)
     openwebui_base_url: str = Field(min_length=1, max_length=500)

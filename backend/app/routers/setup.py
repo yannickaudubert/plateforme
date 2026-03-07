@@ -42,6 +42,7 @@ def setup_state(
         ),
         "tools": SetupToolsInput(
             nocodb_base_url=runtime.nocodb_base_url,
+            nocodb_writable_tables=runtime.nocodb_writable_tables,
             n8n_base_url=runtime.n8n_base_url,
             perplexica_base_url=runtime.perplexica_base_url,
             openwebui_base_url=runtime.openwebui_base_url,

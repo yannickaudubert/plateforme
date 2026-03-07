@@ -17,7 +17,8 @@ def get_runtime_config() -> RuntimeConfig:
 
 @lru_cache(maxsize=1)
 def get_secrets() -> SecretSettings:
-    return SecretSettings()
+    runtime = get_runtime_config()
+    return SecretSettings(_env_file=runtime.env_file, _env_file_encoding="utf-8")
 
 
 @lru_cache(maxsize=1)
@@ -28,7 +29,28 @@ def get_adapter_registry() -> AdapterRegistry:
         if secrets.nocodb_api_token is not None
         else None
     )
-    return AdapterRegistry(get_runtime_config(), nocodb_api_token=nocodb_token or None)
+    n8n_api_key = (
+        secrets.n8n_api_key.get_secret_value().strip()
+        if secrets.n8n_api_key is not None
+        else None
+    )
+    perplexica_api_key = (
+        secrets.perplexica_api_key.get_secret_value().strip()
+        if secrets.perplexica_api_key is not None
+        else None
+    )
+    openwebui_api_key = (
+        secrets.openwebui_api_key.get_secret_value().strip()
+        if secrets.openwebui_api_key is not None
+        else None
+    )
+    return AdapterRegistry(
+        get_runtime_config(),
+        nocodb_api_token=nocodb_token or None,
+        n8n_api_key=n8n_api_key or None,
+        perplexica_api_key=perplexica_api_key or None,
+        openwebui_api_key=openwebui_api_key or None,
+    )
 
 
 @lru_cache(maxsize=1)

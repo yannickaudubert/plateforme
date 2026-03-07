@@ -31,6 +31,7 @@ const TEXT = {
     allowedRoots: "Allowed roots (comma separated)",
     tools: "Tool endpoints",
     nocodb: "NocoDB base URL",
+    nocodbWritableTables: "Writable NocoDB tables (comma separated IDs, optional)",
     n8n: "n8n base URL",
     perplexica: "Perplexica base URL",
     openwebui: "Open WebUI base URL",
@@ -68,6 +69,7 @@ const TEXT = {
     allowedRoots: "Racines autorisees (separees par virgule)",
     tools: "Endpoints outils",
     nocodb: "URL NocoDB",
+    nocodbWritableTables: "Tables NocoDB ecrivable (IDs separes par virgule, optionnel)",
     n8n: "URL n8n",
     perplexica: "URL Perplexica",
     openwebui: "URL Open WebUI",
@@ -92,6 +94,7 @@ export function SetupWizard() {
   const [state, setState] = useState<SetupConfigurationState | null>(null);
   const [secrets, setSecrets] = useState<SetupSecretsInput>({});
   const [allowedRootsText, setAllowedRootsText] = useState<string>("");
+  const [nocodbWritableTablesText, setNocodbWritableTablesText] = useState<string>("");
   const [updateSecrets, setUpdateSecrets] = useState<boolean>(true);
   const [applyResult, setApplyResult] = useState<SetupApplyResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -107,6 +110,7 @@ export function SetupWizard() {
       const payload = await fetchSetupState();
       setState(payload);
       setAllowedRootsText(payload.obsidian.allowed_roots.join(","));
+      setNocodbWritableTablesText(payload.tools.nocodb_writable_tables.join(","));
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -158,13 +162,20 @@ export function SetupWizard() {
     setError(null);
     setApplyResult(null);
     try {
+      const cleanedWritableTables = nocodbWritableTablesText
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
       const payload = {
         runtime: state.runtime,
         obsidian: {
           vault_path: state.obsidian.vault_path,
           allowed_roots: allowedRootsText.split(",").map((item) => item.trim()).filter(Boolean)
         },
-        tools: state.tools,
+        tools: {
+          ...state.tools,
+          nocodb_writable_tables: cleanedWritableTables
+        },
         secrets,
         update_secrets: updateSecrets
       };
@@ -320,6 +331,12 @@ export function SetupWizard() {
                   })
                 }
               />
+              <label className="label">{t.nocodbWritableTables}</label>
+              <input
+                className="input"
+                value={nocodbWritableTablesText}
+                onChange={(event) => setNocodbWritableTablesText(event.target.value)}
+              />
               <label className="label">{t.n8n}</label>
               <input
                 className="input"
@@ -412,6 +429,7 @@ export function SetupWizard() {
               <p>{t.appName}: {state.runtime.app_name}</p>
               <p>{t.vaultPath}: {state.obsidian.vault_path}</p>
               <p>{t.nocodb}: {state.tools.nocodb_base_url}</p>
+              <p>{t.nocodbWritableTables}: {nocodbWritableTablesText || "-"}</p>
               <p>{t.n8n}: {state.tools.n8n_base_url}</p>
               <p>{t.perplexica}: {state.tools.perplexica_base_url}</p>
               <p>{t.openwebui}: {state.tools.openwebui_base_url}</p>

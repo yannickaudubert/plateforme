@@ -9,7 +9,14 @@ from app.config import RuntimeConfig
 
 
 class AdapterRegistry:
-    def __init__(self, config: RuntimeConfig, nocodb_api_token: str | None = None) -> None:
+    def __init__(
+        self,
+        config: RuntimeConfig,
+        nocodb_api_token: str | None = None,
+        n8n_api_key: str | None = None,
+        perplexica_api_key: str | None = None,
+        openwebui_api_key: str | None = None,
+    ) -> None:
         self.obsidian = ObsidianAdapter(
             vault_path=config.obsidian_vault_path,
             allowed_roots=config.obsidian_allowed_roots,
@@ -18,6 +25,6 @@ class AdapterRegistry:
             base_url=config.nocodb_base_url,
             api_token=nocodb_api_token,
         )
-        self.n8n = N8nAdapter(base_url=config.n8n_base_url)
-        self.perplexica = PerplexicaAdapter(base_url=config.perplexica_base_url)
-        self.openwebui = OpenWebUIAdapter(base_url=config.openwebui_base_url)
+        self.n8n = N8nAdapter(base_url=config.n8n_base_url, api_key=n8n_api_key)
+        self.perplexica = PerplexicaAdapter(base_url=config.perplexica_base_url, api_key=perplexica_api_key)
+        self.openwebui = OpenWebUIAdapter(base_url=config.openwebui_base_url, api_key=openwebui_api_key)

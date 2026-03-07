@@ -1,3 +1,3 @@
-from app.routers import admin, health, nocodb, obsidian, setup, system
+from app.routers import admin, health, n8n, nocodb, obsidian, openwebui, perplexica, setup, system
 
-__all__ = ["admin", "health", "nocodb", "obsidian", "setup", "system"]
+__all__ = ["admin", "health", "n8n", "nocodb", "obsidian", "openwebui", "perplexica", "setup", "system"]

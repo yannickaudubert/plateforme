@@ -1,13 +1,28 @@
 import {
   AdminDiagnostics,
   AdminView,
+  N8nExecutionSummary,
+  N8nWorkflowActionPayload,
+  N8nWorkflowActionResponse,
+  N8nWorkflowSummary,
   NocoDBBaseSummary,
+  NocoDBRowMutationResponse,
+  NocoDBRowWritePayload,
   NocoDBRowsResponse,
   NocoDBTableSummary,
+  OpenWebUIChatPayload,
+  OpenWebUIChatResponse,
+  OpenWebUIChatToNotePayload,
+  OpenWebUIChatToNoteResponse,
+  OpenWebUIModelSummary,
   ObsidianCreateNotePayload,
   ObsidianNoteContent,
   ObsidianUpdateNotePayload,
   ObsidianWriteResponse,
+  PerplexicaSearchPayload,
+  PerplexicaSearchResponse,
+  PerplexicaSearchToNotePayload,
+  PerplexicaSearchToNoteResponse,
   SetupApplyRequest,
   SetupApplyResponse,
   SetupConfigurationState,
@@ -107,4 +122,92 @@ export function fetchNocoDBRows(
   const query = params.toString();
   const suffix = query ? `?${query}` : "";
   return request<NocoDBRowsResponse>(`/api/v1/nocodb/tables/${encodeURIComponent(tableId)}/rows${suffix}`);
+}
+
+export function createNocoDBRow(
+  tableId: string,
+  payload: NocoDBRowWritePayload
+): Promise<NocoDBRowMutationResponse> {
+  return request<NocoDBRowMutationResponse>(`/api/v1/nocodb/tables/${encodeURIComponent(tableId)}/rows`, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function updateNocoDBRow(
+  tableId: string,
+  rowId: string,
+  payload: NocoDBRowWritePayload
+): Promise<NocoDBRowMutationResponse> {
+  return request<NocoDBRowMutationResponse>(
+    `/api/v1/nocodb/tables/${encodeURIComponent(tableId)}/rows/${encodeURIComponent(rowId)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload)
+    }
+  );
+}
+
+export function fetchN8nWorkflows(limit = 25): Promise<N8nWorkflowSummary[]> {
+  return request<N8nWorkflowSummary[]>(`/api/v1/n8n/workflows?limit=${limit}`);
+}
+
+export function fetchN8nExecutions(limit = 25): Promise<N8nExecutionSummary[]> {
+  return request<N8nExecutionSummary[]>(`/api/v1/n8n/executions?limit=${limit}`);
+}
+
+export function activateN8nWorkflow(
+  workflowId: string,
+  payload: N8nWorkflowActionPayload
+): Promise<N8nWorkflowActionResponse> {
+  return request<N8nWorkflowActionResponse>(`/api/v1/n8n/workflows/${encodeURIComponent(workflowId)}/activate`, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function deactivateN8nWorkflow(
+  workflowId: string,
+  payload: N8nWorkflowActionPayload
+): Promise<N8nWorkflowActionResponse> {
+  return request<N8nWorkflowActionResponse>(`/api/v1/n8n/workflows/${encodeURIComponent(workflowId)}/deactivate`, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function runPerplexicaSearch(payload: PerplexicaSearchPayload): Promise<PerplexicaSearchResponse> {
+  return request<PerplexicaSearchResponse>("/api/v1/perplexica/search", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function savePerplexicaSearchToNote(
+  payload: PerplexicaSearchToNotePayload
+): Promise<PerplexicaSearchToNoteResponse> {
+  return request<PerplexicaSearchToNoteResponse>("/api/v1/perplexica/search-to-note", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function fetchOpenWebUIModels(): Promise<OpenWebUIModelSummary[]> {
+  return request<OpenWebUIModelSummary[]>("/api/v1/openwebui/models");
+}
+
+export function runOpenWebUIChat(payload: OpenWebUIChatPayload): Promise<OpenWebUIChatResponse> {
+  return request<OpenWebUIChatResponse>("/api/v1/openwebui/chat", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function saveOpenWebUIChatToNote(
+  payload: OpenWebUIChatToNotePayload
+): Promise<OpenWebUIChatToNoteResponse> {
+  return request<OpenWebUIChatToNoteResponse>("/api/v1/openwebui/chat-to-note", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
 }
