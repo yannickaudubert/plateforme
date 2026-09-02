@@ -7,9 +7,11 @@ import { PerplexicaResearch } from "./pages/PerplexicaResearch";
 import { OpenWebUIOperator } from "./pages/OpenWebUIOperator";
 import { Administration } from "./pages/Administration";
 import { SetupWizard } from "./pages/SetupWizard";
+import { SIIAOSFabric } from "./pages/SIIAOSFabric";
 
 const navItems = [
   { path: "/", label: "Home" },
+  { path: "/siiaos", label: "SIIAOS Fabric" },
   { path: "/obsidian", label: "Obsidian Workspace" },
   { path: "/nocodb", label: "NocoDB Control" },
   { path: "/n8n", label: "n8n Orchestrator" },
@@ -23,26 +25,15 @@ function App() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <h1>Cockpit OS</h1>
-        <p>DSI Transverse</p>
-        <nav>
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              className={({ isActive }) =>
-                isActive ? "nav-link nav-link-active" : "nav-link"
-              }
-              to={item.path}
-              end={item.path === "/"}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
+        <h1>Cockpit OS</h1><p>DSI Transverse</p>
+        <nav>{navItems.map((item) => (
+          <NavLink key={item.path} className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"} to={item.path} end={item.path === "/"}>{item.label}</NavLink>
+        ))}</nav>
       </aside>
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/siiaos" element={<SIIAOSFabric />} />
           <Route path="/obsidian" element={<ObsidianWorkspace />} />
           <Route path="/nocodb" element={<NocoDBControl />} />
           <Route path="/n8n" element={<N8nOrchestrator />} />

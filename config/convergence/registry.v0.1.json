@@ -1,0 +1,135 @@
+{
+  "schema_version": "0.1.0",
+  "registry_id": "siiaos-convergence-2026-09-02",
+  "status": "PROPOSAL_READ_ONLY",
+  "generated_at": "2026-09-02T14:18:00+02:00",
+  "authority": {
+    "lineage_decision": "OPTION-C",
+    "authority_kernel": "v0.7.2-C",
+    "contribution_branch": "v0.8.0-alpha9",
+    "rules": [
+      "No second Agent Core",
+      "No second Capability Core",
+      "Convergence Core remains consultative and read-only",
+      "Interfaces are projections, not authority",
+      "Providers are replaceable implementations, not authority",
+      "Unknown state is preserved instead of guessed",
+      "No host executor is enabled by this convergence slice"
+    ]
+  },
+  "planes": [
+    {"id":"canonical","purpose":"Identity, mission, authority, policy, lineage and canonical contracts"},
+    {"id":"registry","purpose":"Specialized registries and crosswalks"},
+    {"id":"knowledge","purpose":"Sources, staging, promotion, lineage and derivative indexes"},
+    {"id":"control","purpose":"Mission, routing, policy, gates and placement"},
+    {"id":"evidence","purpose":"Observations, OperationRecord, tests, receipts and freshness"},
+    {"id":"adapter","purpose":"Provider and protocol translation without policy authority"},
+    {"id":"execution","purpose":"Future bounded execution; disabled in this slice"},
+    {"id":"projection","purpose":"Web, Godot, client rooms, mobile and public views"},
+    {"id":"federation","purpose":"Nodes, external anchors and compute providers with boundaries"}
+  ],
+  "truth_facets": ["desired","declared","discovered","installed","configured","running","healthy","authorized","tenant_compatible","data_class_compatible","mission_ready","stale","unknown","blocked","quarantined"],
+  "registries": [
+    {"id":"building","label":"Building Registry","status":"DESIGN_CONVERGENCE","owner_plane":"registry"},
+    {"id":"node","label":"Node Registry","status":"DESIGN_CONVERGENCE","owner_plane":"registry"},
+    {"id":"external_anchor","label":"External Anchor Registry","status":"DESIGN_CONVERGENCE","owner_plane":"registry"},
+    {"id":"service","label":"Service Registry","status":"PARTIAL_HISTORICAL_IMPLEMENTATIONS","owner_plane":"registry"},
+    {"id":"capability","label":"Capability Registry","status":"PRESERVE_CAPABILITY_CORE","owner_plane":"canonical"},
+    {"id":"provider_adapter","label":"Provider & Adapter Registry","status":"DESIGN_CONVERGENCE","owner_plane":"registry"},
+    {"id":"model","label":"Model Registry","status":"DESIGN_CONVERGENCE","owner_plane":"registry"},
+    {"id":"agent_persona_team","label":"Agent / Persona / Team Registry","status":"PRESERVE_AGENT_CORE","owner_plane":"canonical"},
+    {"id":"skill_tool","label":"Skill & Tool Registry","status":"DESIGN_CONVERGENCE","owner_plane":"registry"},
+    {"id":"experience","label":"Experience Registry","status":"TO_BUILD","owner_plane":"projection"},
+    {"id":"project_mission","label":"Project / Mission / Task Registry","status":"ADMIT_ALPHA9_UNDER_TESTS","owner_plane":"canonical"},
+    {"id":"knowledge","label":"Knowledge / Source / Promotion Registry","status":"CONVERGE_EXISTING","owner_plane":"knowledge"},
+    {"id":"evidence","label":"Evidence Index","status":"CONVERGE_OPERATION_RECORD_AND_EVIDENCEGRAPH","owner_plane":"evidence"},
+    {"id":"deployment_lineage","label":"Deployment & Version Lineage Registry","status":"P0","owner_plane":"registry"},
+    {"id":"port_endpoint","label":"Port & Endpoint Registry","status":"P0","owner_plane":"registry"},
+    {"id":"license","label":"License Registry","status":"P1","owner_plane":"registry"},
+    {"id":"domain_compliance","label":"Domain / Compliance Registry","status":"P0_DESIGN","owner_plane":"canonical"},
+    {"id":"regulatory","label":"Regulatory Requirement / Control Registry","status":"P0_SEED","owner_plane":"canonical"},
+    {"id":"improvement","label":"Improvement / Experiment / Drift Registry","status":"P0_DESIGN","owner_plane":"canonical"}
+  ],
+  "districts": [
+    {"id":"today","label":"Aujourd'hui / Command Center","purpose":"Attention, missions, incidents, decisions, resources and next actions"},
+    {"id":"work","label":"Dossiers, Missions & Projets","purpose":"Portfolio, missions, tasks, mandates, RAID, RACI, roadmap and delivery"},
+    {"id":"analysis","label":"Analyser & Concevoir","purpose":"Audit workbench, synchronized maps, decision room and scenarios"},
+    {"id":"production","label":"Produire","purpose":"Deliverables, office factory, code foundry, publication and releases"},
+    {"id":"knowledge","label":"Intelligence & Savoirs","purpose":"Knowledge, hyperwatch, science, open science, OSINT and evidence"},
+    {"id":"si_tools","label":"SI, Outils & Experiences","purpose":"Capabilities, providers, native tools, services and Experience Registry"},
+    {"id":"agents","label":"Organisation Agentique","purpose":"Roles, personas, profiles, teams, operator gateway and lifecycle"},
+    {"id":"models_compute","label":"IA, ModelOps & Compute","purpose":"Models, runtimes, nodes, GPU/CPU/storage, placement and external compute"},
+    {"id":"clients","label":"Clients & Engagements","purpose":"Organizations, clients, channels, client SI, boundaries and evidence"},
+    {"id":"radars","label":"Radars & Admission","purpose":"OSS, Python, models, data, science, compute, APIs and alternatives"},
+    {"id":"governance","label":"Gouvernance, Reglementaire & Risques","purpose":"Requirements, controls, obligations, policies, approvals and evidence"},
+    {"id":"improvement","label":"Amelioration & Experimentation","purpose":"Drift, regressions, debt, experiments, benchmarks and promotion"},
+    {"id":"admin","label":"Administration SIIAOS","purpose":"Registries, lineage, tenancy, secrets refs, backups and diagnostics"}
+  ],
+  "building_profiles": [
+    {"id":"dsi-innovation","label":"DSI / Innovation / IA / Open Source / GitOps","status":"TARGET"},
+    {"id":"consulting","label":"Cabinet de conseil / missions","status":"TARGET"},
+    {"id":"science","label":"Science / recherche / open science","status":"TARGET"},
+    {"id":"territories","label":"Territoires / politiques publiques / communs","status":"TARGET"},
+    {"id":"osint","label":"OSINT / recherche","status":"TARGET"},
+    {"id":"data-open-data","label":"Data / Open Data","status":"TARGET"},
+    {"id":"dev-agentops","label":"Dev / DevOps / AgentOps","status":"TARGET"},
+    {"id":"infra-compute","label":"Infrastructure / Compute / HPC / Quantum","status":"TARGET"},
+    {"id":"multimodal-audio","label":"Creation multimodale / Audio","status":"TARGET"},
+    {"id":"knowledge-archive","label":"Knowledge / ArchiveOps","status":"TARGET"},
+    {"id":"sandrine","label":"Sandrine / La Ferme aux Fleurs","status":"PROFILE_TO_RECONCILE"},
+    {"id":"agoria","label":"AgorIA federated workspace","status":"DEFER_FEDERATION_UNTIL_M3"},
+    {"id":"neurocampus","label":"Neurocampus","status":"PROFILE_TO_RECONCILE"},
+    {"id":"pass-education","label":"PASS / education","status":"PROFILE_TO_RECONCILE"}
+  ],
+  "team_decks": [
+    {"id":"audit-transverse","label":"Audit transverse","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"architecture","label":"Architecture","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"programme","label":"Programme / direction de projet","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"product","label":"Product / PO","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"security-law","label":"Securite / Droit / Conformite","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"data-ai","label":"Data / IA","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"prospective","label":"Prospective / Hyperveille","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"science","label":"Science / Recherche","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"code-foundry","label":"Code Foundry","activation":"DORMANT_BY_DEFAULT"},
+    {"id":"critical-deliverable","label":"Livrable critique / producer-reviewer-red-team","activation":"DORMANT_BY_DEFAULT"}
+  ],
+  "radars": [
+    {"id":"resource","label":"Resource Radar","status":"EXISTING_LINEAGE_TO_RECONCILE","scope":"models, datasets, repositories, papers and artifacts"},
+    {"id":"oss","label":"OSS / Application Radar","status":"EXISTING_METHOD_TO_CONVERGE","scope":"self-hosted applications and alternatives"},
+    {"id":"python","label":"Python Capability Radar","status":"P0_DESIGN_P1_BUILD","scope":"packages to functional capability arms; no automatic installation"},
+    {"id":"compute","label":"Compute Commons Radar","status":"P0_DESIGN","scope":"local, HPC, cloud/free, community and quantum providers"},
+    {"id":"model","label":"Model / Dataset Radar","status":"CONVERGE_RESOURCE_RADAR_MODELOPS","scope":"models, runtimes, licenses, quality and node fit"},
+    {"id":"science","label":"Open Science Radar","status":"P1","scope":"papers, datasets, methods, replications and controversies"},
+    {"id":"regulatory","label":"Regulatory Freshness Radar","status":"P0_SEED","scope":"official texts, guidance, dates, supersession and impact candidates"},
+    {"id":"api-mcp","label":"API / MCP / Protocol Radar","status":"P1","scope":"APIs, MCP, A2A, ACP, AG-UI and integration contracts"},
+    {"id":"experience","label":"Interface / Experience Radar","status":"P1","scope":"native UI, deep link, embed, mini-view, reverse proxy and headless modes"}
+  ],
+  "compute_provider_classes": ["local_node","remote_workstation","academic_hpc","public_hpc","cloud_free_tier","community_compute","remote_notebook","object_archive_storage","quantum_backend"],
+  "regulatory_seed": {
+    "status":"SEED_METADATA_ONLY_NOT_LEGAL_ADVICE",
+    "verified_on":"2026-09-02",
+    "sources":[
+      {"id":"eu-ai-act","label":"Regulation (EU) 2024/1689 - Artificial Intelligence Act","authority_type":"binding_regulation","jurisdiction":"EU","source_url":"https://eur-lex.europa.eu/eli/reg/2024/1689","current_note":"Track the current consolidated text and phased applicability per use case; do not encode one global applicable flag."},
+      {"id":"gdpr","label":"Regulation (EU) 2016/679 - GDPR","authority_type":"binding_regulation","jurisdiction":"EU","source_url":"https://eur-lex.europa.eu/eli/reg/2016/679/oj","current_note":"Model data-protection applicability independently from AI Act classification."},
+      {"id":"eu-data-act","label":"Regulation (EU) 2023/2854 - Data Act","authority_type":"binding_regulation","jurisdiction":"EU","source_url":"https://eur-lex.europa.eu/eli/reg/2023/2854/oj","current_note":"Store phased application rules at Requirement level, with source version and dates."},
+      {"id":"eu-cra","label":"Regulation (EU) 2024/2847 - Cyber Resilience Act","authority_type":"binding_regulation","jurisdiction":"EU","source_url":"https://eur-lex.europa.eu/eli/reg/2024/2847/oj","current_note":"Model phased dates per article/chapter rather than one effective boolean."},
+      {"id":"fr-nis2-transposition","label":"French bill on resilience of critical infrastructures and cybersecurity","authority_type":"legislative_process","jurisdiction":"FR","source_url":"https://www.senat.fr/dossier-legislatif/pjl24-033.html","current_note":"Treat as legislative process until an official enacted-law source proves otherwise."},
+      {"id":"cnil-ai-development","label":"CNIL recommendations for developing AI systems under GDPR","authority_type":"regulator_guidance","jurisdiction":"FR/EU","source_url":"https://www.cnil.fr/fr/developpement-des-systemes-dia-les-recommandations-de-la-cnil-pour-respecter-le-rgpd","current_note":"Guidance is distinct from statutory text and feeds control proposals, not automatic legal conclusions."}
+    ]
+  },
+  "salvage": [
+    {"source":"v0.7.2-C","decision":"PRESERVE_AUTHORITY","assets":["Agent Core","Capability Core","Authority & Trace","OperationRecord","Convergence Core","Global STOP","migration safety"]},
+    {"source":"v0.8.0-alpha9","decision":"ADMIT_OBJECT_BY_OBJECT_UNDER_TESTS","assets":["Task Fabric","EvidenceGraph","Project/Artifact/Portfolio","Knowledge Pack","read-only observations","SQLite","richer projections"]},
+    {"source":"plateforme","decision":"SALVAGE_OPERATOR_UI_AND_ADAPTER_PATTERNS","assets":["React shell","FastAPI","admin diagnostics","Obsidian","NocoDB","n8n","Perplexica","Open WebUI adapters","SQLite journal"]},
+    {"source":"resource-radar-v3","decision":"SALVAGE_DISCOVERY_AND_PUBLIC_PROJECTION","assets":["multi-source discovery","artifact resolution","local bridge","manifest export","Vercel projection"]},
+    {"source":"historical-immeuble-building","decision":"SALVAGE_VIEW_AND_BUILDING_PATTERNS","assets":["admin/business/client modes","BuildingState","ViewSpec principles","web/Godot parity"]}
+  ],
+  "gates": [
+    {"id":"G0","label":"Baseline admission and lineage reconciliation","state":"OPEN"},
+    {"id":"G1","label":"Truth contract and faceted state","state":"OPEN"},
+    {"id":"G2","label":"Identity, tenancy and human gates","state":"BLOCKING_EXECUTION"},
+    {"id":"G3","label":"Foundational registries and machine evidence","state":"OPEN"},
+    {"id":"G4","label":"SQLite durability / backup / restore proof","state":"BLOCKING_PRODUCTION"},
+    {"id":"G5","label":"Bounded execution","state":"DEFERRED"}
+  ]
+}
