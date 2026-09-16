@@ -2,7 +2,7 @@
   "runtime": {
     "app_name": "Cockpit OS DSI Transverse",
     "app_env": "development",
-    "app_host": "0.0.0.0",
+    "app_host": "127.0.0.1",
     "app_port": 8000,
     "log_dir": "./logs"
   },
@@ -11,9 +11,9 @@
     "default_page": "home"
   },
   "obsidian": {
-    "vault_path": "D:/Yannick",
+    "vault_path": "./data/obsidian-vault",
     "allowed_roots": [
-      "D:/Yannick"
+      "./data/obsidian-vault"
     ]
   },
   "tools": {
