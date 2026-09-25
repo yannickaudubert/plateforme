@@ -15,7 +15,7 @@ It centralizes:
 
 ### 2.1 Obsidian
 Role:
-- canonical documentary knowledge base
+- replaceable documentary workspace for admitted knowledge; not the global SIIAOS authority or canon
 
 Expected cockpit capabilities:
 - browse vault
@@ -28,7 +28,7 @@ Expected cockpit capabilities:
 
 ### 2.2 NocoDB
 Role:
-- structured transverse data layer
+- replaceable structured-data capability for admitted schemas/records
 
 Expected cockpit capabilities:
 - list bases and tables
@@ -39,7 +39,7 @@ Expected cockpit capabilities:
 
 ### 2.3 n8n
 Role:
-- orchestration engine
+- workflow execution capability under SIIAOS Mission/Policy/Evidence contracts
 
 Expected cockpit capabilities:
 - list workflows
@@ -50,7 +50,7 @@ Expected cockpit capabilities:
 
 ### 2.4 Perplexica
 Role:
-- research and exploration interface
+- research and exploration capability; outputs are not canonical facts by default
 
 Expected cockpit capabilities:
 - launch research queries
@@ -60,7 +60,7 @@ Expected cockpit capabilities:
 
 ### 2.5 Open WebUI
 Role:
-- conversational AI operator layer
+- conversational/model interaction capability; not an authority or sovereign orchestration layer
 
 Expected cockpit capabilities:
 - choose model
