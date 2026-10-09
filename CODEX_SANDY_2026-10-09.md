@@ -7,6 +7,9 @@
 
 > Ce fichier missionne Codex installé localement sur SandY. Sa présence sur GitHub ne lance pas Codex, ne prouve pas qu'un clone est présent et n'autorise aucune mutation sur SandY. Respecter d'abord les directives AGENTS.md du dépôt, les décisions humaines applicables et les permissions effectivement accordées.
 
+## 0 bis. Relais et garde-fous Ops (ajout 2026-10-09)
+Lire `IrinA/docs/SANDY_LOCAL_MODEL_DELEGATION_2026-10-09.md` et `IrinA/docs/SANDY_RELAY_AND_CONTINUITY_2026-10-09.md` (documents prives, ne pas recopier dans ce depot PUBLIC). Auditer la securite des anciens adapters, les ACL, ports Docker, secrets, journalisation, back-ups et possibilites de retrait. Reporter les faits d'execution uniquement dans le relais local prive, sans inventer de nouveau control plane ni imprimer les variables .env. Aucune migration/mutation par defaut.
+
 ## 1. Rôle confirmé ou déclaré du dépôt
 Patrimoine technique Cockpit OS DSI Transverse : adapters, probes, UX opérateur et scripts historiques à qualifier pour réemploi, PAS un control-plane SIIAOS concurrent.
 
