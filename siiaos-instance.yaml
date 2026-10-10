@@ -1,0 +1,174 @@
+schema: siiaos.instance-manifest.v0.1
+status: working
+
+instance:
+  id: SYS-COCKPIT-OS-DSI-TRANSVERSE
+  name: Cockpit OS DSI Transverse
+  owner: Yannick Audubert
+  type: system
+  purpose: >-
+    Local-first operator layer for supervised SI operations. This repository is an
+    implementation candidate of an operator/control surface, not the SIIAOS canon.
+  scope:
+    - local_operations
+    - tool_supervision
+    - controlled_writes
+    - action_journaling
+    - setup_and_diagnostics
+  lifecycle: pilot
+
+inherits:
+  authority_registry: yannickaudubert/universite-libre/governance/siiaos-authority-registry.yaml
+  constitution: SIIAOS-CONSTITUTION-2026-08-23
+  operational_reference: SIIAOS-SOCLE-DIRECTEUR-0.1
+  overrides: []
+
+people_and_roles:
+  accountable_human: Yannick Audubert
+  users:
+    - operator
+  roles:
+    - operator
+    - reviewer
+    - guardian
+  reviewers: []
+  guardians: []
+
+data:
+  classification: INTERNAL
+  allowed_sources:
+    - configured_local_vaults
+    - configured_services
+    - explicit_operator_inputs
+  forbidden_sources:
+    - undeclared_out_of_scope_paths
+    - secrets_in_canonical_or_prompt_context
+  vaults:
+    - configured_obsidian_vaults
+  corpus: []
+  retention: per_journal_and_source_policy
+  export_policy: standard_files_sqlite_and_documented_configs
+  deletion_policy: explicit_operator_action_only
+
+missions:
+  allowed_workflows:
+    - inspect
+    - diagnose
+    - propose
+    - bounded_configured_write
+    - service_activation_deactivation_with_confirmation
+  forbidden_actions:
+    - self_elevation_of_permissions
+    - unbounded_filesystem_write
+    - hidden_external_publication
+    - canonical_SIIAOS_write_without_external_gate
+  governance_level: G3
+  autonomy_ceiling: N3
+  human_gate_required: true
+
+capabilities:
+  agents: []
+  skills: []
+  tools:
+    - Obsidian
+    - NocoDB
+    - n8n
+    - Perplexica
+    - Open_WebUI
+  providers: []
+  connectors:
+    - FastAPI_adapters
+  local_fallback_required: true
+
+budgets:
+  time: null
+  compute: null
+  api: null
+  energy: null
+
+interfaces:
+  - local_web_cockpit
+  - local_API
+
+operations:
+  backup_plan:
+    - atomic_file_backups
+    - git_history
+    - sqlite_journal_backup
+  rollback_plan:
+    - restore_backup_for_file_writes
+    - explicit_inverse_or_prior_config_for_supported_actions
+  healthchecks:
+    - backend_health
+    - system_status
+    - adapter_health
+    - frontend_build
+  evidence_required:
+    - action_journal
+    - explicit_error_state
+    - test_results_for_changes
+  observability:
+    - SQLite_action_journal
+    - health_endpoints
+    - explicit_request_results
+
+value_scopes:
+  client_value:
+    enabled: false
+    confidential_assets: []
+  personal_value:
+    enabled: true
+    private_assets:
+      - local_configuration
+      - operator_context
+  commons:
+    eligible: true
+    candidates:
+      - generic_adapter_contracts
+      - reusable_guardrails
+      - test_patterns
+      - runbooks
+    forbidden:
+      - secrets
+      - local_paths_revealing_private_context
+      - private_vault_data
+      - credentials
+    promotion_requires:
+      - provenance_review
+      - rights_review
+      - security_review
+      - human_approval
+
+impact:
+  human:
+    - operator_visibility
+    - reduced_manual_fragmentation
+  organizational:
+    - explicit_control_surface
+    - documented_tool_boundaries
+  economic:
+    - reduced_duplicate_tooling_and_operational_friction
+  territorial: []
+  ecological:
+    - local_first_execution
+    - avoid_unnecessary_remote_compute
+  democratic:
+    - explicit_action_and_error_traces
+
+lineage:
+  source_repositories:
+    - yannickaudubert/plateforme
+  source_documents:
+    - SIIAOS_CAHIER_DES_CHARGES_MAITRE_v0.1
+    - SIIAOS_00_Charte_Fondatrice_Socle_Directeur_2026-09-06
+  predecessors: []
+  supersedes: []
+
+validation:
+  last_reviewed_at: 2026-09-08
+  evidence:
+    - README.md
+  unresolved:
+    - relation_to_current_control_plane_lineage
+    - relation_to_si_local_admin_and_IrinA
+    - production_readiness_on_SandY
