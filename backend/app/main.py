@@ -5,26 +5,19 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import build_runtime_config
 from app.logging import log_action, setup_logging
-from app.routers import admin, health, n8n, nocodb, obsidian, openwebui, perplexica, setup, system
+from app.routers import admin, convergence, health, n8n, nocodb, obsidian, openwebui, perplexica, setup, system
 
 runtime = build_runtime_config()
-
 setup_logging()
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    log_action(
-        tool="system",
-        action="startup",
-        status="ok",
-        details={"environment": runtime.app_env},
-    )
+    log_action(tool="system", action="startup", status="ok", details={"environment": runtime.app_env})
     yield
 
 
 app = FastAPI(title=runtime.app_name, version="0.1.0", lifespan=lifespan)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -42,3 +35,4 @@ app.include_router(perplexica.router)
 app.include_router(openwebui.router)
 app.include_router(setup.router)
 app.include_router(admin.router)
+app.include_router(convergence.router)
