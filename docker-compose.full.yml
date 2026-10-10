@@ -22,7 +22,7 @@ services:
       sh -c "pip install --no-cache-dir -e . &&
       uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     depends_on:
       - nocodb
       - n8n
@@ -39,7 +39,7 @@ services:
       sh -c "npm install &&
       npm run dev -- --host 0.0.0.0 --port 5173"
     ports:
-      - "5173:5173"
+      - "127.0.0.1:5173:5173"
     depends_on:
       - backend
 
@@ -47,11 +47,11 @@ services:
     image: nocodb/nocodb:latest
     environment:
       NC_DB: sqlite:///usr/app/data/nocodb.db
-      NC_AUTH_JWT_SECRET: ${NOCODB_JWT_SECRET:-change-me}
+      NC_AUTH_JWT_SECRET: ${NOCODB_JWT_SECRET:?set NOCODB_JWT_SECRET in .env}
     volumes:
       - ./data/nocodb:/usr/app/data
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
 
   n8n:
     image: n8nio/n8n:latest
@@ -65,18 +65,18 @@ services:
     volumes:
       - ./data/n8n:/home/node/.n8n
     ports:
-      - "5678:5678"
+      - "127.0.0.1:5678:5678"
 
   openwebui:
     image: ghcr.io/open-webui/open-webui:main
     environment:
       ENABLE_SIGNUP: "false"
       WEBUI_AUTH: "false"
-      WEBUI_SECRET_KEY: ${OPENWEBUI_SECRET_KEY:-change-me}
+      WEBUI_SECRET_KEY: ${OPENWEBUI_SECRET_KEY:?set OPENWEBUI_SECRET_KEY in .env}
     volumes:
       - ./data/openwebui:/app/backend/data
     ports:
-      - "3000:8080"
+      - "127.0.0.1:3000:8080"
 
   perplexica:
     image: ${PERPLEXICA_IMAGE:-itsthedev/perplexica:latest}
@@ -84,4 +84,4 @@ services:
     volumes:
       - ./data/perplexica:/app/data
     ports:
-      - "3001:3000"
+      - "127.0.0.1:3001:3000"
