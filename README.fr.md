@@ -3,11 +3,11 @@
 Cockpit OS DSI Transverse est une surcouche operateur locale au-dessus de Windows.  
 Il unifie la supervision et les actions operationnelles sur:
 
-- Obsidian (documentation canonique)
-- NocoDB (donnees structurees transverses)
-- n8n (orchestration de workflows)
-- Perplexica (recherche et exploration)
-- Open WebUI (interface IA operateur)
+- Obsidian (workspace documentaire local, derrière les contrats SIIAOS)
+- NocoDB (capacité de données structurées, bornée par schémas et droits)
+- n8n (exécution de workflows sous mandat/policy)
+- Perplexica (recherche/exploration, résultats à qualifier)
+- Open WebUI (interface IA opérateur, sans autorité propre)
 
 Versions de langue:
 
